@@ -5,7 +5,7 @@
 extern "C" {
 #endif
 
-#include "main.h"
+#include "common.h"
 
 void MX_GPIO_Init(void);
 

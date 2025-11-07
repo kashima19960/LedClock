@@ -5,7 +5,7 @@
 extern "C" {
 #endif
 
-#include "main.h"
+#include "common.h"
 
 extern TIM_HandleTypeDef htim3;
 

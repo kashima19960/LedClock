@@ -5,7 +5,7 @@
 extern "C" {
 #endif
 
-#include "main.h"
+#include "common.h"
 
 extern ADC_HandleTypeDef hadc;
 

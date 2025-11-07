@@ -1,14 +1,16 @@
-#include "main.h"
+#include "common.h"
 #include "adc.h"
 #include "dma.h"
+#include "gpio.h"
 #include "i2c.h"
 #include "tim.h"
-#include "gpio.h"
 
 #include "SD3077.h"
 #include "TM1637.h"
 #include "stdbool.h"
 
+#define USE_HAL_DRIVER
+#define STM32F030x6
 typedef enum
 {
     MODE_SHOW_TIME = 0,
@@ -202,8 +204,57 @@ int main(void)
 {
 }
 
+/**
+ * 项目使用HSI,进入PLL倍频前有个二分频，然后PLL选4，最终SYSCLK为32MHz，具体的可以参照时钟树
+ * HSI: 8 MHz
+ * HSI14: 14 MHz
+ *   - SYSCLK : 32 MHz (from PLLCLK)
+ *   - HCLK : 32 MHz (SYSCLK ÷ 1)
+ *   - PCLK1 : 32 MHz (HCLK ÷ 1)
+ *   - FHCLK : 32 MHz
+ *   - I2C1 : HSI = 8 MHz
+ *   - ADC : HSI14 = 14 MHz (max 14 MHz)
+ */
 void SystemClock_Config(void)
 {
+    RCC_OscInitTypeDef RCC_OscInitStruct = {0};
+    RCC_ClkInitTypeDef RCC_ClkInitStruct = {0};
+    RCC_PeriphCLKInitTypeDef PeriphClkInit = {0};
+
+    /** Initializes the RCC Oscillators according to the specified parameters
+     * in the RCC_OscInitTypeDef structure.
+     */
+    RCC_OscInitStruct.OscillatorType = RCC_OSCILLATORTYPE_HSI | RCC_OSCILLATORTYPE_HSI14;
+    RCC_OscInitStruct.HSIState = RCC_HSI_ON;
+    RCC_OscInitStruct.HSI14State = RCC_HSI14_ON;
+    RCC_OscInitStruct.HSICalibrationValue = RCC_HSICALIBRATION_DEFAULT;
+    RCC_OscInitStruct.HSI14CalibrationValue = 16;
+    RCC_OscInitStruct.PLL.PLLState = RCC_PLL_ON;
+    RCC_OscInitStruct.PLL.PLLSource = RCC_PLLSOURCE_HSI;
+    RCC_OscInitStruct.PLL.PLLMUL = RCC_PLL_MUL4;
+    RCC_OscInitStruct.PLL.PREDIV = RCC_PREDIV_DIV1;
+    if (HAL_RCC_OscConfig(&RCC_OscInitStruct) != HAL_OK)
+    {
+        Error_Handler();
+    }
+
+    /** Initializes the CPU, AHB and APB buses clocks
+     */
+    RCC_ClkInitStruct.ClockType = RCC_CLOCKTYPE_HCLK | RCC_CLOCKTYPE_SYSCLK | RCC_CLOCKTYPE_PCLK1;
+    RCC_ClkInitStruct.SYSCLKSource = RCC_SYSCLKSOURCE_PLLCLK;
+    RCC_ClkInitStruct.AHBCLKDivider = RCC_SYSCLK_DIV1;
+    RCC_ClkInitStruct.APB1CLKDivider = RCC_HCLK_DIV1;
+
+    if (HAL_RCC_ClockConfig(&RCC_ClkInitStruct, FLASH_LATENCY_0) != HAL_OK)
+    {
+        Error_Handler();
+    }
+    PeriphClkInit.PeriphClockSelection = RCC_PERIPHCLK_I2C1;
+    PeriphClkInit.I2c1ClockSelection = RCC_I2C1CLKSOURCE_HSI;
+    if (HAL_RCCEx_PeriphCLKConfig(&PeriphClkInit) != HAL_OK)
+    {
+        Error_Handler();
+    }
 }
 
 void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin)
@@ -217,9 +268,3 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
 void Error_Handler(void)
 {
 }
-
-#ifdef  USE_FULL_ASSERT
-void assert_failed(uint8_t *file, uint32_t line)
-{
-}
-#endif

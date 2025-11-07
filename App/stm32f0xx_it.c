@@ -1,4 +1,4 @@
-#include "main.h"
+#include "common.h"
 #include "stm32f0xx_it.h"
 
 extern DMA_HandleTypeDef hdma_adc;
