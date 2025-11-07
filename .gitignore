@@ -1,0 +1,87 @@
+# Keil MDK5 项目忽略文件
+
+# ===========================
+# Keil 编译输出文件
+# ===========================
+*.o
+*.d
+*.crf
+*.lst
+*.map
+*.hex
+*.axf
+*.htm
+*.lnp
+*.bak
+*.dep
+*.uvguix.*
+*.scvd
+*.iex
+*.build_log.htm
+
+# ===========================
+# Keil 项目临时文件
+# ===========================
+# 用户选项文件（包含个人配置）
+*.uvopt
+*.uvoptx
+
+# 调试会话文件
+*.dbgconf
+
+# Flash 下载算法
+JLinkLog.txt
+JLinkSettings.ini
+
+# ===========================
+# 输出目录
+# ===========================
+/Objects/
+/Listings/
+/Output/
+/DebugConfig/
+/RTE/
+
+# ===========================
+# 备份文件
+# ===========================
+*_backup_*
+*.old
+
+# ===========================
+# 操作系统相关
+# ===========================
+# Windows
+Thumbs.db
+Desktop.ini
+
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# Linux
+*~
+
+# ===========================
+# 编辑器相关
+# ===========================
+# Visual Studio Code
+.vscode/
+*.code-workspace
+
+# Sublime Text
+*.sublime-project
+*.sublime-workspace
+
+# ===========================
+# 其他
+# ===========================
+# 临时文件
+*.tmp
+*.temp
+*.log
+
+# 压缩文件（如果是临时生成的）
+# *.zip
+# *.rar
