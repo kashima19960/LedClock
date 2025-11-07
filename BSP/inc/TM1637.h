@@ -34,7 +34,7 @@
 #define TM1637_CLK_DIO_GPIO_CLK_ENABLE() do{__HAL_RCC_GPIOF_CLK_ENABLE();}while(0)
 #define TM1637_READ_DIO HAL_GPIO_ReadPin(TM1637_DIO_PORT, TM1637_DIO_PIN)
 
-void TM1637Init(void);
+void TM1637_Init(void);
 
 void TM1637ShowNumberRight(uint8_t index, uint32_t num, uint8_t pointLocation, uint8_t isPaddingZero);
 

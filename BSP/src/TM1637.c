@@ -80,111 +80,63 @@ static void TM1637_Ack(void)
 
 static uint8_t translateFromChar(char c)
 {
-    switch (c)
-    {
-    // Numbers
-    case '0':
-        return 0x3F;
-    case '1':
-        return 0x06;
-    case '2':
-        return 0x5B;
-    case '3':
-        return 0x4F;
-    case '4':
-        return 0x66;
-    case '5':
-        return 0x6D;
-    case '6':
-        return 0x7D;
-    case '7':
-        return 0x07;
-    case '8':
-        return 0x7F;
-    case '9':
-        return 0x6F;
+	switch (c)
+	{
+	// Numbers
+	case '0': return 0x3F;
+	case '1': return 0x06;
+	case '2': return 0x5B;
+	case '3': return 0x4F;
+	case '4': return 0x66;
+	case '5': return 0x6D;
+	case '6': return 0x7D;
+	case '7': return 0x07;
+	case '8': return 0x7F;
+	case '9': return 0x6F;
 
-    // Uppercase letters
-    case 'A':
-        return 0x77;
-    case 'B':
-        return 0x7C;
-    case 'C':
-        return 0x39;
-    case 'D':
-        return 0x5E;
-    case 'E':
-        return 0x79;
-    case 'F':
-        return 0x71;
-    case 'H':
-        return 0x76;
-    case 'I':
-        return 0x30;
-    case 'J':
-        return 0x1E;
-    case 'L':
-        return 0x38;
-    case 'N':
-        return 0x54;
-    case 'O':
-        return 0x5C;
-    case 'P':
-        return 0x73;
-    case 'R':
-        return 0x50;
-    case 'S':
-        return 0x6D;
-    case 'T':
-        return 0x44;
-    case 'U':
-        return 0x3E;
+	// Uppercase letters
+	case 'A': return 0x77;
+	case 'B': return 0x7C;
+	case 'C': return 0x39;
+	case 'D': return 0x5E;
+	case 'E': return 0x79;
+	case 'F': return 0x71;
+	case 'H': return 0x76;
+	case 'I': return 0x30;
+	case 'J': return 0x1E;
+	case 'L': return 0x38;
+	case 'N': return 0x54;
+	case 'O': return 0x5C;
+	case 'P': return 0x73;
+	case 'R': return 0x50;
+	case 'S': return 0x6D;
+	case 'T': return 0x44;
+	case 'U': return 0x3E;
 
-    // Lowercase letters
-    case 'a':
-        return 0x77;
-    case 'b':
-        return 0x7C;
-    case 'c':
-        return 0x58;
-    case 'd':
-        return 0x5E;
-    case 'e':
-        return 0x79;
-    case 'f':
-        return 0x71;
-    case 'h':
-        return 0x74;
-    case 'i':
-        return 0x10;
-    case 'j':
-        return 0x1E;
-    case 'l':
-        return 0x38;
-    case 'n':
-        return 0x54;
-    case 'o':
-        return 0x5C;
-    case 'p':
-        return 0x73;
-    case 'r':
-        return 0x50;
-    case 's':
-        return 0x6D;
-    case 't':
-        return 0x44;
-    case 'u':
-        return 0x1C;
+	// Lowercase letters
+	case 'a': return 0x77;
+	case 'b': return 0x7C;
+	case 'c': return 0x58;
+	case 'd': return 0x5E;
+	case 'e': return 0x79;
+	case 'f': return 0x71;
+	case 'h': return 0x74;
+	case 'i': return 0x10;
+	case 'j': return 0x1E;
+	case 'l': return 0x38;
+	case 'n': return 0x54;
+	case 'o': return 0x5C;
+	case 'p': return 0x73;
+	case 'r': return 0x50;
+	case 's': return 0x6D;
+	case 't': return 0x44;
+	case 'u': return 0x1C;
 
-    // Special characters
-    case '-':
-        return 0x40;
-    case '_':
-        return 0x08;
-
-    default:
-        return 0x00;
-    }
+	// Special characters
+	case '-': return 0x40;
+	case '_': return 0x08;
+	default: return 0x00;
+	}
 }
 
 uint32_t power(uint32_t x, uint8_t n)
@@ -197,7 +149,7 @@ uint32_t power(uint32_t x, uint8_t n)
     return rst;
 }
 
-void TM1637Init(void)
+void TM1637_Init(void)
 {
     TM1637SetBrightness(8);
 }
