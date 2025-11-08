@@ -368,7 +368,7 @@ int main(void)
 }
 
 /**
- * 项目使用HSI,进入PLL倍频前有个二分频，然后PLL选4，最终SYSCLK为32MHz，具体的可以参照时钟树
+ * 项目使用HSI,进入PLL倍频前有个二分频，然后PLL选4，最终SYSCLK为16MHz，具体的可以参照时钟树
  * HSI: 8 MHz
  * HSI14: 14 MHz
  *   - SYSCLK : 16 MHz
