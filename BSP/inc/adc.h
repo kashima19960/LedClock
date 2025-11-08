@@ -5,15 +5,14 @@
 extern "C" {
 #endif
 
-#include "common.h"
+#include "main.h"
 
 extern ADC_HandleTypeDef hadc;
 
-void MX_ADC_Init(void);
+void adc_init(void);
 
 #ifdef __cplusplus
 }
 #endif
 
 #endif
-

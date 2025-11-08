@@ -1,11 +1,25 @@
 #ifndef __SD3077_H
 #define __SD3077_H
 
-#include "i2c.h"
 #include "stm32f0xx_hal.h"
 
 /* IIC句柄 */
 #define SD3077_IIC_HANDLE      hi2c1
+#define SD3077_IIC_CLK_ENABLE() __HAL_RCC_I2C1_CLK_ENABLE()
+#define SD3077_IIC_GPIO_CLK_ENABLE() __HAL_RCC_GPIOA_CLK_ENABLE()
+/*
+设BCD码的高4位（十位数）为 T，低4位（个位数）为 O
+val为：val = T * 16 + O
+十进制值是：bin = T * 10 + O。
+两者相差6*T，因此函数的算法是： val - 6 * T
+*/
+#define bcd2bin(val) ((val) - 6 * ((val) >> 4))
+/* 同理，加上6*T即可 */
+#define bin2bcd(val) ((val) + 6 * ((val) / 10))
+
+#define SD3077_SEC_INT_PIN GPIO_PIN_1
+#define SD3077_SEC_INT_GPIO_PORT GPIOB
+
 
 /* 设备地址 */
 #define SD3077_IIC_ADDR_7BIT   ((uint8_t)0x32) /* 7位设备地址: 0110010 */
@@ -201,5 +215,6 @@ void SetInterruptOuput(SD3077IntFreq freq);
 void EnableSencodInterruptOuput();
 void WriteBackData(uint8_t index, uint8_t *data, uint8_t size);
 void ReadBackData(uint8_t index, uint8_t *data, uint8_t size);
-
+void sec_int_gpio_init(void);
+void sd3077_iic_init(void);
 #endif

@@ -150,6 +150,7 @@ uint32_t power(uint32_t x, uint8_t n)
 
 void tm1637_init(void)
 {
+    tm1637_gpio_init();
     tm1637_set_brightness(8);
 }
 

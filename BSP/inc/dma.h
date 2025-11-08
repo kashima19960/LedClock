@@ -5,13 +5,12 @@
 extern "C" {
 #endif
 
-#include "common.h"
+#include "main.h"
 
-void MX_DMA_Init(void);
+void dma_init(void);
 
 #ifdef __cplusplus
 }
 #endif
 
 #endif
-

@@ -1,13 +1,13 @@
-#include "common.h"
 #include "adc.h"
+#include "common.h"
 #include "dma.h"
 #include "gpio.h"
 #include "i2c.h"
 #include "tim.h"
 
 #include "sd3077.h"
-#include "tm1637.h"
 #include "stdbool.h"
+#include "tm1637.h"
 
 #define USE_HAL_DRIVER
 #define STM32F030x6
@@ -126,6 +126,22 @@ void SystemClock_Config(void);
 
 void readBackupSettings()
 {
+    uint8_t data[3];
+    ReadBackData(0, data, 3);
+
+    alarmHour = data[0];
+    alarmMin = data[1];
+    isAlarmEnabled = data[2];
+
+    // 检查闹铃设置是否合规
+    if (alarmHour > 23)
+    {
+        alarmHour = 0;
+    }
+    if (alarmMin > 59)
+    {
+        alarmMin = 0;
+    }
 }
 
 void saveSettings()
@@ -202,16 +218,162 @@ void modeKeyReleased()
 
 int main(void)
 {
+    HAL_Init();
+
+    SystemClock_Config();
+
+    dma_init();
+    sd3077_iic_init();
+    sec_int_gpio_init();
+    adc_init();
+    tim17_init();
+    tim3_init();
+    tim16_init();
+
+    uint8_t backupData[BAK_DATA_SIZE];
+    ReadBackData(BAK_POWER_DOWN_IND_INDEX, backupData, BAK_DATA_SIZE);
+    if (backupData[0] != POWER_DOWN_IND_DATA && backupData[1] != POWER_DOWN_IND_DATA)
+    {
+        time.year = YEAR_MIN_SET;
+        time.month = 1;
+        time.dayOfMonth = 1;
+        time.dayOfWeek = 1;
+        time.hours = 0;
+        time.minutes = 0;
+        time.ampm = HOUR24;
+        time.seconds = 0;
+        SetTime(&time);
+
+        resetSettings();
+        saveSettings();
+    }
+    else
+    {
+        isAlarmEnabled = backupData[BAK_ALARM_ENABLED_INDEX];
+        alarmHour = backupData[BAK_ALARM_HOUR_INDEX];
+        alarmMin = backupData[BAK_ALARM_MINUTE_INDEX];
+        tempertureShowTime = backupData[BAK_TEMP_SHOW_TIME_INDEX];
+        tempertureHideTime = backupData[BAK_TEMP_HIDE_TIME_INDEX];
+        isRingOnTimeEnabled = backupData[BAK_ROT_ENABLED_INDEX];
+        ringOnTimeStart = backupData[BAK_ROT_START_INDEX];
+        ringOnTimeStop = backupData[BAK_ROT_STOP_INDEX];
+        savedBrightness = backupData[BAK_BRIGHTNESS_INDEX];
+        strongBrightness = backupData[BAK_BRIGHTNESS_STRONG_INDEX];
+        weakBrightness = backupData[BAK_BRIGHTNESS_WEAK_INDEX];
+    }
+
+    bool hasError = false;
+    if (alarmHour > (uint8_t)23 || alarmMin > (uint8_t)59)
+    {
+        hasError = true;
+    }
+    if (ringOnTimeStart > 23 || ringOnTimeStop > 23)
+    {
+        hasError = true;
+    }
+    if (savedBrightness > 8 || strongBrightness > 8 || strongBrightness == 0 || weakBrightness > 8 ||
+        weakBrightness == 0)
+    {
+        hasError = true;
+    }
+
+    if (hasError)
+    {
+        resetSettings();
+        saveSettings();
+    }
+
+    tm1637_init();
+    if (savedBrightness != 0)
+    {
+        TM1637SetBrightness(savedBrightness);
+    }
+    else
+    {
+        TM1637SetBrightness(STRONG_BRIGHTNESS_VALUE);
+        isWeakBrightness = false;
+    }
+
+    HAL_ADCEx_Calibration_Start(&hadc);
+    HAL_ADC_Start_DMA(&hadc, adcValue, 2);
+    HAL_TIM_Base_Start(&htim3);
+
+    HAL_TIM_Base_Start_IT(&LIGHT_CONTROL_TIMER_HANDLE);
+
+    TimeNow(&time);
+    lastRingOnTimeHour = time.hours;
+
+    EnableSencodInterruptOuput();
+
+    lastDisplayChangeTime = HAL_GetTick();
+
+    isInitCompleted = true;
+
+    uint32_t now = 0, passedTime;
+    while (1)
+    {
+        if (HAL_GPIO_ReadPin(BUZZER_GPIO_PORT, BUZZER_PIN) == GPIO_PIN_RESET && !isAlarming)
+        {
+            now = HAL_GetTick();
+            if (now < ringStartTime || (now - ringStartTime >= RING_ON_TIME_LONG))
+            {
+                HAL_GPIO_WritePin(BUZZER_GPIO_PORT, BUZZER_PIN, GPIO_PIN_SET);
+            }
+        }
+
+        if (tempertureShowTime > 0)
+        {
+            if (currentMode == MODE_SHOW_TIME)
+            {
+                now = HAL_GetTick();
+                passedTime = now - lastDisplayChangeTime;
+                if (now < lastDisplayChangeTime || passedTime >= (tempertureHideTime * 1000))
+                {
+                    currentMode = MODE_SHOW_TEMPERTURE;
+                    lastDisplayChangeTime = now;
+                }
+            }
+            else if (currentMode == MODE_SHOW_TEMPERTURE && tempertureHideTime > 0)
+            {
+                now = HAL_GetTick();
+                passedTime = now - lastDisplayChangeTime;
+                if (now < lastDisplayChangeTime || passedTime >= (tempertureShowTime * 1000))
+                {
+                    currentMode = MODE_SHOW_TIME;
+                    lastDisplayChangeTime = now;
+                }
+            }
+        }
+        else if (currentMode == MODE_SHOW_TEMPERTURE)
+        {
+            currentMode = MODE_SHOW_TIME;
+            lastDisplayChangeTime = now;
+        }
+
+        if (HAL_GPIO_ReadPin(SET_KEY_GPIO_PORT, SET_KEY_PIN) == GPIO_PIN_RESET && currentMode >= MODE_SET_HOUR &&
+            currentMode <= MODE_SET_ROT_STOP)
+        {
+            uint32_t curVal = HAL_GetTick();
+            uint32_t timePassed = curVal - lastSetKeyPressTime;
+            if (timePassed > KEY_LONG_PRESS_EFFECT_TIME)
+            {
+                if (curVal - lastSetKeyPressReportTime > KEY_REPEAT_TIME_INTERVAL)
+                {
+                    setKeyPresseRepeatReport();
+                    lastSetKeyPressReportTime = curVal;
+                }
+            }
+        }
+    }
 }
 
 /**
  * 项目使用HSI,进入PLL倍频前有个二分频，然后PLL选4，最终SYSCLK为32MHz，具体的可以参照时钟树
  * HSI: 8 MHz
  * HSI14: 14 MHz
- *   - SYSCLK : 32 MHz (from PLLCLK)
- *   - HCLK : 32 MHz (SYSCLK ÷ 1)
- *   - PCLK1 : 32 MHz (HCLK ÷ 1)
- *   - FHCLK : 32 MHz
+ *   - SYSCLK : 16 MHz
+ *   - HCLK : 16 MHz
+ *   - PCLK1 : 16 MHz
  *   - I2C1 : HSI = 8 MHz
  *   - ADC : HSI14 = 14 MHz (max 14 MHz)
  */
@@ -255,14 +417,6 @@ void SystemClock_Config(void)
     {
         Error_Handler();
     }
-}
-
-void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin)
-{
-}
-
-void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
-{
 }
 
 void Error_Handler(void)

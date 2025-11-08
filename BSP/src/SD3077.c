@@ -1,13 +1,61 @@
 #include "sd3077.h"
+I2C_HandleTypeDef g_iic_init_struct;
 /*
-设BCD码的高4位（十位数）为 T，低4位（个位数）为 O
-val为：val = T * 16 + O
-十进制值是：bin = T * 10 + O。
-两者相差6*T，因此函数的算法是： val - 6 * T
+sd3077硬件上接了，PA9--I2C1_SCL,PA10--I2C1_SDA,PB1--SEC-INT
 */
-#define bcd2bin(val) ((val) - 6 * ((val) >> 4))
-/* 同理，加上6*T即可 */
-#define bin2bcd(val) ((val) + 6 * ((val) / 10))
+void sd3077_iic_init(void)
+{
+    g_iic_init_struct.Instance = I2C1;
+    g_iic_init_struct.Init.Timing = 0x0000020B;
+    g_iic_init_struct.Init.OwnAddress1 = 0;
+    g_iic_init_struct.Init.AddressingMode = I2C_ADDRESSINGMODE_7BIT;
+    g_iic_init_struct.Init.DualAddressMode = I2C_DUALADDRESS_DISABLE;
+    g_iic_init_struct.Init.OwnAddress2 = 0;
+    g_iic_init_struct.Init.OwnAddress2Masks = I2C_OA2_NOMASK;
+    g_iic_init_struct.Init.GeneralCallMode = I2C_GENERALCALL_DISABLE;
+    g_iic_init_struct.Init.NoStretchMode = I2C_NOSTRETCH_DISABLE;
+    if (HAL_I2C_Init(&g_iic_init_struct) != HAL_OK)
+    {
+        Error_Handler();
+    }
+
+    if (HAL_I2CEx_ConfigAnalogFilter(&g_iic_init_struct, I2C_ANALOGFILTER_ENABLE) != HAL_OK)
+    {
+        Error_Handler();
+    }
+
+    if (HAL_I2CEx_ConfigDigitalFilter(&g_iic_init_struct, 0) != HAL_OK)
+    {
+        Error_Handler();
+    }
+}
+void sec_int_gpio_init(void)
+{
+    GPIO_InitTypeDef gpio_init_struct = {0};
+    SD3077_SEC_INT_GPIO_CLK_ENABLE();
+    gpio_init_struct.Pin = SD3077_SEC_INT_PIN;
+    gpio_init_struct.Mode = GPIO_MODE_IT_FALLING;
+    gpio_init_struct.Pull = GPIO_PULLUP;
+    HAL_GPIO_Init(SD3077_SEC_INT_GPIO_PORT, &gpio_init_struct);
+    HAL_NVIC_SetPriority(EXTI0_1_IRQn, 0, 0);
+    HAL_NVIC_EnableIRQ(EXTI0_1_IRQn);
+}
+
+void HAL_I2C_MspInit(I2C_HandleTypeDef *i2cHandle)
+{
+    GPIO_InitTypeDef gpio_init_struct = {0};
+    if (i2cHandle->Instance == I2C1)
+    {
+        SD3077_IIC_GPIO_CLK_ENABLE();
+        SD3077_IIC_CLK_ENABLE();
+        gpio_init_struct.Pin = GPIO_PIN_9 | GPIO_PIN_10;
+        gpio_init_struct.Mode = GPIO_MODE_AF_OD;
+        gpio_init_struct.Pull = GPIO_PULLUP;
+        gpio_init_struct.Speed = GPIO_SPEED_FREQ_HIGH;
+        gpio_init_struct.Alternate = GPIO_AF4_I2C1;
+        HAL_GPIO_Init(GPIOA, &gpio_init_struct);
+    }
+}
 
 /**
  * @brief       解除SD3077写保护
@@ -70,7 +118,7 @@ void TimeNow(DateTime *dateTime)
     dateTime->seconds = bcd2bin(data[0]);
     dateTime->minutes = bcd2bin(data[1]);
 
-    if (data[2] >> 7) // D7=1 24小时制
+    if (data[2] >> 7) // D7=1 24小时制 0 12小时制
     {
         dateTime->ampm = HOUR24;
         dateTime->hours = bcd2bin(data[2] & 0x7F); // 0x7F = 01111111
@@ -120,7 +168,7 @@ void SetInterruptOuput(SD3077IntFreq freq)
 
     // 读出控制寄存器2和3
     uint8_t data[2];
-    HAL_I2C_Mem_Read(&SD3077_IIC_HANDLE, SD3077_IIC_ADDR_READ, 0x10, 1, data, 2, HAL_MAX_DELAY);
+    HAL_I2C_Mem_Read(&SD3077_IIC_HANDLE, SD3077_IIC_ADDR_READ, SD3077_REG_CTR2, 1, data, 2, HAL_MAX_DELAY);
 
     // 允许频率中断
     data[0] |= 0x01;
@@ -136,7 +184,7 @@ void SetInterruptOuput(SD3077IntFreq freq)
     //	data[1] |= 0x0F;
 
     // 控制寄存器回写
-    HAL_I2C_Mem_Write(&SD3077_IIC_HANDLE, SD3077_IIC_ADDR_WRITE, 0x10, 1, data, 2, HAL_MAX_DELAY);
+    HAL_I2C_Mem_Write(&SD3077_IIC_HANDLE, SD3077_IIC_ADDR_WRITE, SD3077_REG_CTR2, 1, data, 2, HAL_MAX_DELAY);
 }
 
 /*
@@ -166,10 +214,9 @@ void EnableSencodInterruptOuput()
     data[1] |= 0x0F; // 0x0F=00001111
 
     // 控制寄存器回写
-    HAL_I2C_Mem_Write(&SD3077_IIC_HANDLE, SD3077_IIC_ADDR_WRITE, 0x10, 1, data, 2, HAL_MAX_DELAY);
+    HAL_I2C_Mem_Write(&SD3077_IIC_HANDLE, SD3077_IIC_ADDR_WRITE, SD3077_REG_CTR2, 1, data, 2, HAL_MAX_DELAY);
     lock_write_protect();
 }
-
 
 /*
 读写SD3077用户RAM(70bytes),范围:0x2C~0x71
@@ -183,7 +230,7 @@ void WriteBackData(uint8_t index, uint8_t *data, uint8_t size)
     unlock_write_protect();
 
     // 写入备份寄存器
-    HAL_I2C_Mem_Write(&SD3077_IIC_HANDLE, SD3077_IIC_ADDR_WRITE, SD3077_REG_SRAM_START + index, 1, data, size,);
+    HAL_I2C_Mem_Write(&SD3077_IIC_HANDLE, SD3077_IIC_ADDR_WRITE, SD3077_REG_SRAM_START + index, 1, data, size, );
     lock_write_protect();
 }
 
@@ -193,5 +240,6 @@ void ReadBackData(uint8_t index, uint8_t *data, uint8_t size)
         return;
 
     // 从备份寄存器读出
-    HAL_I2C_Mem_Read(&SD3077_IIC_HANDLE, SD3077_IIC_ADDR_READ, SD3077_REG_SRAM_START + index, 1, data, size, HAL_MAX_DELAY);
+    HAL_I2C_Mem_Read(&SD3077_IIC_HANDLE, SD3077_IIC_ADDR_READ, SD3077_REG_SRAM_START + index, 1, data, size,
+                     HAL_MAX_DELAY);
 }
