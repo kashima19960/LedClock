@@ -21,27 +21,25 @@
 
 #define TM1637_CLK(x) \
     do { \
-        x ? HAL_GPIO_WritePin(TM1637_CLK_PORT, TM1637_CLK_PIN, GPIO_PIN_SET) : \
-            HAL_GPIO_WritePin(TM1637_CLK_PORT, TM1637_CLK_PIN, GPIO_PIN_RESET); \
+        HAL_GPIO_WritePin(TM1637_CLK_PORT, TM1637_CLK_PIN, (x) ? GPIO_PIN_SET : GPIO_PIN_RESET); \
     } while(0)
 
 #define TM1637_DIO(x) \
     do { \
-        x ? HAL_GPIO_WritePin(TM1637_DIO_PORT, TM1637_DIO_PIN, GPIO_PIN_SET) : \
-            HAL_GPIO_WritePin(TM1637_DIO_PORT, TM1637_DIO_PIN, GPIO_PIN_RESET); \
+        HAL_GPIO_WritePin(TM1637_DIO_PORT, TM1637_DIO_PIN, (x) ? GPIO_PIN_SET : GPIO_PIN_RESET); \
     } while(0)
 
 #define TM1637_CLK_DIO_GPIO_CLK_ENABLE() do{__HAL_RCC_GPIOF_CLK_ENABLE();}while(0)
 #define TM1637_READ_DIO HAL_GPIO_ReadPin(TM1637_DIO_PORT, TM1637_DIO_PIN)
 
-void TM1637_Init(void);
+void tm1637_init(void);
 
-void TM1637ShowNumberRight(uint8_t index, uint32_t num, uint8_t pointLocation, uint8_t isPaddingZero);
+void tm1637_show_number_right(uint8_t index, uint32_t num, uint8_t pointLocation, uint8_t isPaddingZero);
 
-void TM1637SetChar(uint8_t index, char c, uint8_t point);
+void tm1637_set_char(uint8_t index, char c, uint8_t point);
 
-void TM1637SetRawData(uint8_t index, uint8_t data);
+void tm1637_set_raw_data(uint8_t index, uint8_t data);
 
-void TM1637SetBrightness(uint8_t brightness);
+void tm1637_set_brightness(uint8_t brightness);
 
 #endif

@@ -1,6 +1,6 @@
 #include "TM1637.h"
-static void TM1637_WriteByte(uint8_t b);
-const uint8_t numbersMap[] = {
+static void tm1637_write_byte(uint8_t b);
+const uint8_t number_map[] = {
     0x3f, // 0d
     0x06, // 1d
     0x5b, // 2d
@@ -24,7 +24,7 @@ void delay(uint32_t i)
     }
 }
 
-void TM1637_GPIO_Init(void)
+void tm1637_gpio_init(void)
 {
     TM1637_CLK_DIO_GPIO_CLK_ENABLE();
 
@@ -48,7 +48,7 @@ void TM1637_GPIO_Init(void)
 
 下面是根据手册里面的例程移植过来的程序
 */
-static void TM1637_Start(void)
+static void tm1637_start(void)
 {
     TM1637_CLK(1);
     TM1637_DIO(1);
@@ -56,7 +56,7 @@ static void TM1637_Start(void)
     TM1637_DIO(0);
 }
 
-static void TM1637_Stop(void)
+static void tm1637_stop(void)
 {
     TM1637_CLK(0);
     delay(2);
@@ -67,7 +67,7 @@ static void TM1637_Stop(void)
     TM1637_DIO(1);
 }
 
-static void TM1637_Ack(void)
+static void tm1637_ack(void)
 {
     TM1637_CLK(0);
     delay(5);
@@ -78,7 +78,7 @@ static void TM1637_Ack(void)
     TM1637_CLK(0);
 }
 
-static uint8_t translateFromChar(char c)
+static uint8_t translate_from_char(char c)
 {
 	switch (c)
 	{
@@ -149,26 +149,26 @@ uint32_t power(uint32_t x, uint8_t n)
     return rst;
 }
 
-void TM1637_Init(void)
+void tm1637_init(void)
 {
-    TM1637SetBrightness(8);
+    tm1637_set_brightness(8);
 }
 
-void TM1637SetBrightness(uint8_t brightness)
+void tm1637_set_brightness(uint8_t brightness)
 {
     // Brightness command:
     // 1000 0XXX = display off
     // 1000 1BBB = display on, brightness 0-7
     // X = don't care
     // B = brightness
-    TM1637_Start();
-    TM1637_WriteByte(0x87 + brightness); // 0x87=10000111
-    TM1637_Ack();
-    TM1637_Stop();
+    tm1637_start();
+    tm1637_write_byte(0x87 + brightness); // 0x87=10000111
+    tm1637_ack();
+    tm1637_stop();
 }
 
-// TM1637ShowNumberRight(3, number, blinkControl ? 2 : 0xFF, 1);
-void TM1637ShowNumberRight(uint8_t index, uint32_t num, uint8_t pointLocation, uint8_t isPaddingZero)
+// tm1637_show_number_right(3, number, blinkControl ? 2 : 0xFF, 1);
+void tm1637_show_number_right(uint8_t index, uint32_t num, uint8_t pointLocation, uint8_t isPaddingZero)
 {
 
     uint8_t n = 6;
@@ -186,7 +186,7 @@ void TM1637ShowNumberRight(uint8_t index, uint32_t num, uint8_t pointLocation, u
     {
         if (i < n || isPaddingZero)
         {
-            digits[i] = numbersMap[num % 10];
+            digits[i] = number_map[num % 10];
         }
         else
         {
@@ -200,59 +200,59 @@ void TM1637ShowNumberRight(uint8_t index, uint32_t num, uint8_t pointLocation, u
         num /= 10;
     }
 
-    TM1637_Start();
-    TM1637_WriteByte(0x40);
-    TM1637_Ack();
-    TM1637_Stop();
+    tm1637_start();
+    tm1637_write_byte(0x40);
+    tm1637_ack();
+    tm1637_stop();
 
-    TM1637_Start();
-    TM1637_WriteByte(0xc0);
-    TM1637_Ack();
+    tm1637_start();
+    tm1637_write_byte(0xc0);
+    tm1637_ack();
 
     for (uint8_t i = 0; i < 6; ++i)
     {
         if (i <= index)
         {
-            TM1637_WriteByte(digits[index - i]);
+            tm1637_write_byte(digits[index - i]);
         }
         else
         {
-            TM1637_WriteByte(0);
+            tm1637_write_byte(0);
         }
 
-        TM1637_Ack();
+        tm1637_ack();
     }
 
-    TM1637_Stop();
+    tm1637_stop();
 }
 
-void TM1637SetChar(uint8_t index, char c, uint8_t point)
+void tm1637_set_char(uint8_t index, char c, uint8_t point)
 {
-    TM1637SetRawData(index, translateFromChar(c) | (point ? 0x80 : 0x00));
+    tm1637_set_raw_data(index, translate_from_char(c) | (point ? 0x80 : 0x00));
 }
 
-void TM1637SetRawData(uint8_t index, uint8_t data)
+void tm1637_set_raw_data(uint8_t index, uint8_t data)
 {
-    TM1637_Start();
-    TM1637_WriteByte(0x44); // 固定地址模式
-    TM1637_Ack();
-    TM1637_Stop();
+    tm1637_start();
+    tm1637_write_byte(0x44); // 固定地址模式
+    tm1637_ack();
+    tm1637_stop();
 
-    TM1637_Start();
-    TM1637_WriteByte(0xC0 + index); // 固定地址模式
-    TM1637_Ack();
-    TM1637_WriteByte(data);
-    TM1637_Ack();
-    TM1637_Stop();
+    tm1637_start();
+    tm1637_write_byte(0xC0 + index); // 固定地址模式
+    tm1637_ack();
+    tm1637_write_byte(data);
+    tm1637_ack();
+    tm1637_stop();
 }
 
-void TM1637_WriteByte(uint8_t DataByte)
+void tm1637_write_byte(uint8_t data_byte)
 {
     uint8_t i;
     for (i = 0; i < 8; ++i)
     {
         TM1637_CLK(0);
-        if (DataByte & 0x01)
+        if (data_byte & 0x01)
         {
             TM1637_DIO(1);
         }
@@ -261,7 +261,7 @@ void TM1637_WriteByte(uint8_t DataByte)
             TM1637_DIO(0);
         }
         delay(3);
-        DataByte >>= 1;
+        data_byte >>= 1;
         TM1637_CLK(1);
         delay(3);
     }
