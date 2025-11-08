@@ -5,8 +5,8 @@
 #include "i2c.h"
 #include "tim.h"
 
-#include "SD3077.h"
-#include "TM1637.h"
+#include "sd3077.h"
+#include "tm1637.h"
 #include "stdbool.h"
 
 #define USE_HAL_DRIVER

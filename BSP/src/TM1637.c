@@ -1,4 +1,4 @@
-#include "TM1637.h"
+#include "tm1637.h"
 static void tm1637_write_byte(uint8_t b);
 const uint8_t number_map[] = {
     0x3f, // 0d
@@ -45,7 +45,6 @@ void tm1637_gpio_init(void)
 4. 结束条件是 CLK 为高时，DIO 由低电平变为高电平。
 5. TM1637 的数据传输带有应答信号 ACK，当传输数据正确时，会在第八个时钟的下降沿，芯片内部会产生一个应答信号 ACK 将 DIO
 管脚拉低，在第九个时钟结束之后释放 DIO 口线。
-
 下面是根据手册里面的例程移植过来的程序
 */
 static void tm1637_start(void)
