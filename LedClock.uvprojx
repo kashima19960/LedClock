@@ -55,7 +55,7 @@
           <CreateHexFile>1</CreateHexFile>
           <DebugInformation>1</DebugInformation>
           <BrowseInformation>1</BrowseInformation>
-          <ListingPath>.\</ListingPath>
+          <ListingPath>.\Output\</ListingPath>
           <HexFormatSelection>1</HexFormatSelection>
           <Merge32K>0</Merge32K>
           <CreateBatchFile>0</CreateBatchFile>
@@ -336,9 +336,9 @@
             <v6Rtti>0</v6Rtti>
             <VariousControls>
               <MiscControls></MiscControls>
-              <Define></Define>
+              <Define>USE_HAL_DRIVER,STM32F030x6</Define>
               <Undefine></Undefine>
-              <IncludePath></IncludePath>
+              <IncludePath>.\BSP\inc;.\Drivers\CMSIS\Include;.\Drivers\CMSIS\Device\ST\STM32F0xx\Include;.\Drivers\STM32F0xx_HAL_Driver\Inc</IncludePath>
             </VariousControls>
           </Cads>
           <Aads>
@@ -380,7 +380,19 @@
       </TargetOption>
       <Groups>
         <Group>
-          <GroupName>Source Group 1</GroupName>
+          <GroupName>App</GroupName>
+        </Group>
+        <Group>
+          <GroupName>BSP</GroupName>
+        </Group>
+        <Group>
+          <GroupName>HAL</GroupName>
+        </Group>
+        <Group>
+          <GroupName>StartUp</GroupName>
+        </Group>
+        <Group>
+          <GroupName>CMSIS</GroupName>
         </Group>
       </Groups>
     </Target>
