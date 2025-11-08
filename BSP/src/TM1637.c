@@ -27,7 +27,7 @@ void delay(uint32_t i)
 void tm1637_gpio_init(void)
 {
     TM1637_CLK_DIO_GPIO_CLK_ENABLE();
-
+    HAL_GPIO_WritePin(TM1637_CLK_PORT, TM1637_CLK_PIN|TM1637_DIO_PIN, GPIO_PIN_SET);
     GPIO_InitTypeDef gpio_init_struct;
     gpio_init_struct.Pin = TM1637_CLK_PIN | TM1637_DIO_PIN;
     gpio_init_struct.Mode = GPIO_MODE_OUTPUT_OD;

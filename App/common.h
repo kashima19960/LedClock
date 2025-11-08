@@ -9,24 +9,30 @@ extern "C" {
 
 void Error_Handler(void);
 
-#define TM1637_CLK_Pin GPIO_PIN_0
-#define TM1637_CLK_GPIO_Port GPIOF
-#define TM1637_DIO_Pin GPIO_PIN_1
-#define TM1637_DIO_GPIO_Port GPIOF
-#define LIGHT_Pin GPIO_PIN_0
-#define LIGHT_GPIO_Port GPIOA
-#define NTC_Pin GPIO_PIN_1
-#define NTC_GPIO_Port GPIOA
-#define MODE_KEY_Pin GPIO_PIN_2
-#define MODE_KEY_GPIO_Port GPIOA
+#define TM1637_CLK_PIN GPIO_PIN_0
+#define TM1637_CLK_GPIO_PORT GPIOF
+#define TM1637_DIO_PIN GPIO_PIN_1
+#define TM1637_DIO_GPIO_PORT GPIOF
+
+#define LIGHT_PIN GPIO_PIN_0
+#define LIGHT_GPIO_PORT GPIOA
+
+#define NTC_PIN GPIO_PIN_1
+#define NTC_GPIO_PORT GPIOA
+
+#define MODE_KEY_PIN GPIO_PIN_2
+#define MODE_KEY_GPIO_PORT GPIOA
 #define MODE_KEY_EXTI_IRQn EXTI2_3_IRQn
-#define SET_KEY_Pin GPIO_PIN_3
-#define SET_KEY_GPIO_Port GPIOA
+
+#define SET_KEY_PIN GPIO_PIN_3
+#define SET_KEY_GPIO_PORT GPIOA
 #define SET_KEY_EXTI_IRQn EXTI2_3_IRQn
-#define BUZZER_Pin GPIO_PIN_6
-#define BUZZER_GPIO_Port GPIOA
-#define SEC_INT_Pin GPIO_PIN_1
-#define SEC_INT_GPIO_Port GPIOB
+
+#define BUZZER_PIN GPIO_PIN_6
+#define BUZZER_GPIO_PORT GPIOA
+
+#define SEC_INT_PIN GPIO_PIN_1
+#define SEC_INT_GPIO_PORT GPIOB
 #define SEC_INT_EXTI_IRQn EXTI0_1_IRQn
 
 #ifdef __cplusplus

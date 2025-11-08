@@ -31,19 +31,6 @@ typedef enum
     MODE_SET_ROT_STOP,
 } DisplayMode;
 
-#define SECOND_INT_PIN SEC_INT_Pin
-#define SECOND_INT_EXTI_IRQN SEC_INT_EXTI_IRQn
-#define KEY_EXTI_IRQN MODE_KEY_EXTI_IRQn
-
-#define MODE_KEY_GPIO_PORT MODE_KEY_GPIO_Port
-#define MODE_KEY_PIN MODE_KEY_Pin
-
-#define SET_KEY_GPIO_PORT SET_KEY_GPIO_Port
-#define SET_KEY_PIN SET_KEY_Pin
-
-#define BUZZER_GPIO_PORT BUZZER_GPIO_Port
-#define BUZZER_PIN BUZZER_Pin
-
 #define KEY_LONG_PRESS_EFFECT_TIME 800
 #define KEY_REPEAT_TIME_INTERVAL 250
 #define KEY_CLICK_EFFECT_TIME 50
@@ -219,9 +206,7 @@ void modeKeyReleased()
 int main(void)
 {
     HAL_Init();
-
     SystemClock_Config();
-
     dma_init();
     sd3077_iic_init();
     sec_int_gpio_init();
@@ -232,6 +217,7 @@ int main(void)
 
     uint8_t backupData[BAK_DATA_SIZE];
     ReadBackData(BAK_POWER_DOWN_IND_INDEX, backupData, BAK_DATA_SIZE);
+    //非正常关机，初始化时间为2020-01-01 00:00:00
     if (backupData[0] != POWER_DOWN_IND_DATA && backupData[1] != POWER_DOWN_IND_DATA)
     {
         time.year = YEAR_MIN_SET;
@@ -247,7 +233,7 @@ int main(void)
         resetSettings();
         saveSettings();
     }
-    else
+    else//正常关机，读取设置
     {
         isAlarmEnabled = backupData[BAK_ALARM_ENABLED_INDEX];
         alarmHour = backupData[BAK_ALARM_HOUR_INDEX];
