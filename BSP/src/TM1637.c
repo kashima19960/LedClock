@@ -234,12 +234,12 @@ void tm1637_set_char(uint8_t index, char c, uint8_t point)
 void tm1637_set_raw_data(uint8_t index, uint8_t data)
 {
     tm1637_start();
-    tm1637_write_byte(0x44); // 固定地址模式
+    tm1637_write_byte(0x44); //0x44=0100 0100 固定地址模式
     tm1637_ack();
     tm1637_stop();
 
     tm1637_start();
-    tm1637_write_byte(0xC0 + index); // 固定地址模式
+    tm1637_write_byte(0xC0 + index); // 0xC0=1100 0000 index 0~5
     tm1637_ack();
     tm1637_write_byte(data);
     tm1637_ack();
