@@ -1,4 +1,5 @@
 #include "sd3077.h"
+#include "app_config.h"
 I2C_HandleTypeDef g_iic_init_struct;
 /*
 sd3077硬件上接了，PA9--I2C1_SCL,PA10--I2C1_SDA,PB1--SEC-INT
@@ -33,10 +34,10 @@ void sec_int_gpio_init(void)
 {
     GPIO_InitTypeDef gpio_init_struct = {0};
     SD3077_SEC_INT_GPIO_CLK_ENABLE();
-    gpio_init_struct.Pin = SD3077_SEC_INT_PIN;
+    gpio_init_struct.Pin = SEC_INT_PIN;
     gpio_init_struct.Mode = GPIO_MODE_IT_FALLING;
     gpio_init_struct.Pull = GPIO_PULLUP;
-    HAL_GPIO_Init(SD3077_SEC_INT_GPIO_PORT, &gpio_init_struct);
+    HAL_GPIO_Init(SEC_INT_GPIO_PORT, &gpio_init_struct);
     HAL_NVIC_SetPriority(EXTI0_1_IRQn, 0, 0);
     HAL_NVIC_EnableIRQ(EXTI0_1_IRQn);
 }

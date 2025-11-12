@@ -3,6 +3,12 @@
 TIM_HandleTypeDef g_tim3_handle;
 TIM_HandleTypeDef g_tim16_handle;
 TIM_HandleTypeDef g_tim17_handle;
+static timer_interrupt_callback_t g_timer_interrupt_callback = NULL;
+void register_timer_interrupt_callback(timer_interrupt_callback_t callback)
+{
+
+    g_timer_interrupt_callback = callback;
+}
 
 /*
 定时器时钟：16MHz / (15+1) = 1MHz
@@ -95,6 +101,26 @@ void HAL_TIM_Base_MspInit(TIM_HandleTypeDef *tim_baseHandle)
     }
 }
 
+void TIM16_IRQHandler(void)
+{
+    HAL_TIM_IRQHandler(&g_tim16_handle);
+}
+
+void TIM17_IRQHandler(void)
+{
+    HAL_TIM_IRQHandler(&g_tim17_handle);
+}
+
+/**
+ * @brief 定时器周期中断回调
+ * @param htim 定时器句柄
+ * @note TIM17: 闹钟响铃控制(1ms) | TIM16: 亮度控制(周期性检测)
+ */
 void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
 {
+    if (g_timer_interrupt_callback != NULL)
+    {
+        g_timer_interrupt_callback(htim);
+    }
 }
+

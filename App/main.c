@@ -4,7 +4,7 @@
 #include "app_display.h"
 #include "app_alarm.h"
 #include "app_settings.h"
-#include "app_keyhandler.h"
+#include "app_interrupt_handler.h"
 #include "dma.h"
 #include "exti.h"
 #include "gpio.h"
@@ -28,10 +28,8 @@ int main(void)
     tim3_init();
     tim16_init();
     key_init();
-
-    /* 注册按键中断回调 */
-    register_key_interrupt_callback(key_interrupt_handler);
-
+    register_exti_interrupt_callback(exti_interrupt_handler);
+    register_timer_interrupt_callback(tim_interrupt_handler);
     uint8_t backupData[BAK_DATA_SIZE];
     ReadBackData(BAK_POWER_DOWN_IND_INDEX, backupData, BAK_DATA_SIZE);
     //非正常关机，初始化时间为2020-01-01 00:00:00

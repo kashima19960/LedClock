@@ -1,8 +1,8 @@
 #include "app_modekey.h"
-#include "app_state.h"
-#include "app_display.h"
 #include "app_alarm.h"
+#include "app_display.h"
 #include "app_settings.h"
+#include "app_state.h"
 #include "sd3077.h"
 #include "tm1637.h"
 
@@ -20,8 +20,7 @@ void mode_key_clicked(void)
     }
 
     /* 显示模式: 进入设置 */
-    if (currentMode == MODE_SHOW_TIME 
-        || currentMode == MODE_SHOW_TEMPERTURE)
+    if (currentMode == MODE_SHOW_TIME || currentMode == MODE_SHOW_TEMPERTURE)
     {
         currentMode = MODE_SET_HOUR;
         blinkControl = 0xFF;
@@ -50,8 +49,7 @@ void mode_key_clicked(void)
     }
     else if (currentMode == MODE_SET_ALARM_ENABLE)
     {
-        currentMode = isAlarmEnabled ? MODE_SET_ALARM_HOUR 
-                                     : MODE_SET_TEMP_SHOW;
+        currentMode = isAlarmEnabled ? MODE_SET_ALARM_HOUR : MODE_SET_TEMP_SHOW;
         blinkControl = 0xFF;
         refreshSettingsDisplay();
     }
@@ -77,7 +75,7 @@ void mode_key_clicked(void)
         {
             currentMode = MODE_SET_BRIGHTNESS;
         }
-        
+
         blinkControl = 0x00;
         refreshSettingsDisplay();
     }
@@ -97,7 +95,7 @@ void mode_key_clicked(void)
         {
             currentMode = MODE_SET_ROT_ENABLE;
         }
-        
+
         blinkControl = 0x00;
         refreshSettingsDisplay();
     }
@@ -119,8 +117,8 @@ void mode_key_clicked(void)
     else if (currentMode == MODE_SET_ROT_ENABLE)
     {
         blinkControl = 0x00;
-        
-        if (!isRingOnTimeEnabled)
+
+        if (!isRingOnTimeEnabled)//isRingOnTimeEnabled=false
         {
             currentMode = MODE_SHOW_TIME;
             TimeNow(&time);
@@ -150,15 +148,15 @@ void mode_key_clicked(void)
     {
         /* 最后一个设置项: 保存并退出设置模式 */
         currentMode = MODE_SHOW_TIME;
-        
+
         /* 将修改后的时间写入RTC */
         TimeNow(&time);
         lastTime.seconds = time.seconds;
         SetTime(&lastTime);
         lastRingOnTimeHour = lastTime.hours;
-        
+
         saveSettings(); /* 保存所有设置到备份寄存器 */
-        
+
         refreshTimeDisplay();
         EnableSencodInterruptOuput(); /* 恢复1Hz秒中断 */
         lastDisplayChangeTime = HAL_GetTick();
@@ -201,20 +199,18 @@ void mode_key_pressed(void)
 void mode_key_released(void)
 {
     uint32_t current_val;
-    
+
     current_val = HAL_GetTick();
-    
+
     if (lastModeKeyPressTime > current_val)
     {
         mode_key_clicked();
     }
-    else if (current_val - lastModeKeyPressTime 
-             > KEY_LONG_PRESS_EFFECT_TIME)
+    else if (current_val - lastModeKeyPressTime > KEY_LONG_PRESS_EFFECT_TIME)
     {
         mode_key_long_pressed();
     }
-    else if (current_val - lastModeKeyPressTime 
-             > KEY_CLICK_EFFECT_TIME)
+    else if (current_val - lastModeKeyPressTime > KEY_CLICK_EFFECT_TIME)
     {
         mode_key_clicked();
     }

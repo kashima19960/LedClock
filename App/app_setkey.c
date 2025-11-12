@@ -1,7 +1,7 @@
 #include "app_setkey.h"
-#include "app_state.h"
-#include "app_display.h"
 #include "app_alarm.h"
+#include "app_display.h"
+#include "app_state.h"
 #include "tm1637.h"
 
 /**
@@ -17,8 +17,7 @@ void set_key_clicked(void)
     }
 
     /* 显示模式: 切换到显示秒 */
-    if (currentMode == MODE_SHOW_TIME 
-        || currentMode == MODE_SHOW_TEMPERTURE)
+    if (currentMode == MODE_SHOW_TIME || currentMode == MODE_SHOW_TEMPERTURE)
     {
         currentMode = MODE_SHOW_SECOND;
         refreshTimeDisplay();
@@ -33,24 +32,24 @@ void set_key_clicked(void)
     else if (currentMode == MODE_SET_HOUR)
     {
         lastTime.hours++;
-        
+
         if (lastTime.hours > 23)
         {
             lastTime.hours = 0;
         }
-        
+
         blinkControl = 0;
         refreshSettingsDisplay();
     }
     else if (currentMode == MODE_SET_MINUTE)
     {
         lastTime.minutes++;
-        
+
         if (lastTime.minutes > 59)
         {
             lastTime.minutes = 0;
         }
-        
+
         blinkControl = 0;
         refreshSettingsDisplay();
     }
@@ -63,60 +62,60 @@ void set_key_clicked(void)
     else if (currentMode == MODE_SET_ALARM_HOUR)
     {
         alarmHour++;
-        
+
         if (alarmHour > 23)
         {
             alarmHour = 0;
         }
-        
+
         blinkControl = 0;
         refreshSettingsDisplay();
     }
     else if (currentMode == MODE_SET_ALARM_MINUTE)
     {
         alarmMin++;
-        
+
         if (alarmMin > 59)
         {
             alarmMin = 0;
         }
-        
+
         blinkControl = 0;
         refreshSettingsDisplay();
     }
     else if (currentMode == MODE_SET_TEMP_SHOW)
     {
         tempertureShowTime++;
-        
+
         if (tempertureShowTime > TEMPERTURE_MAX_SHOW_TIME)
         {
             tempertureShowTime = tempertureHideTime == 0 ? 1 : 0;
         }
-        
+
         blinkControl = 0;
         refreshSettingsDisplay();
     }
     else if (currentMode == MODE_SET_TEMP_HIDE)
     {
         tempertureHideTime++;
-        
+
         if (tempertureHideTime > TEMPERTURE_MAX_HIDE_TIME)
         {
             tempertureHideTime = tempertureShowTime == 0 ? 1 : 0;
         }
-        
+
         blinkControl = 0;
         refreshSettingsDisplay();
     }
     else if (currentMode == MODE_SET_BRIGHTNESS)
     {
         savedBrightness++;
-        
+
         if (savedBrightness > 8)
         {
             savedBrightness = 0;
         }
-        
+
         TM1637SetBrightness(savedBrightness == 0 ? 1 : savedBrightness);
         blinkControl = 0;
         refreshSettingsDisplay();
@@ -124,12 +123,12 @@ void set_key_clicked(void)
     else if (currentMode == MODE_SET_BRIGHTNESS_STRONG)
     {
         strongBrightness++;
-        
+
         if (strongBrightness > 8)
         {
             strongBrightness = 1;
         }
-        
+
         blinkControl = 0;
         TM1637SetBrightness(strongBrightness);
         refreshSettingsDisplay();
@@ -137,12 +136,12 @@ void set_key_clicked(void)
     else if (currentMode == MODE_SET_BRIGHTNESS_WEAK)
     {
         weakBrightness++;
-        
+
         if (weakBrightness > 8)
         {
             weakBrightness = 1;
         }
-        
+
         blinkControl = 0;
         TM1637SetBrightness(weakBrightness);
         refreshSettingsDisplay();
@@ -156,24 +155,24 @@ void set_key_clicked(void)
     else if (currentMode == MODE_SET_ROT_START)
     {
         ringOnTimeStart++;
-        
+
         if (ringOnTimeStart > 23)
         {
             ringOnTimeStart = 0;
         }
-        
+
         blinkControl = 0;
         refreshSettingsDisplay();
     }
     else if (currentMode == MODE_SET_ROT_STOP)
     {
         ringOnTimeStop++;
-        
+
         if (ringOnTimeStop > 23)
         {
             ringOnTimeStop = 0;
         }
-        
+
         blinkControl = 0;
         refreshSettingsDisplay();
     }
@@ -191,96 +190,96 @@ void set_key_presse_repeat_report(void)
     if (currentMode == MODE_SET_HOUR)
     {
         lastTime.hours++;
-        
+
         if (lastTime.hours > 23)
         {
             lastTime.hours = 0;
         }
-        
+
         blinkControl = 0;
         refreshSettingsDisplay();
     }
     else if (currentMode == MODE_SET_MINUTE)
     {
         lastTime.minutes++;
-        
+
         if (lastTime.minutes > 59)
         {
             lastTime.minutes = 0;
         }
-        
+
         blinkControl = 0;
         refreshSettingsDisplay();
     }
     else if (currentMode == MODE_SET_ALARM_HOUR)
     {
         alarmHour++;
-        
+
         if (alarmHour > 23)
         {
             alarmHour = 0;
         }
-        
+
         blinkControl = 0;
         refreshSettingsDisplay();
     }
     else if (currentMode == MODE_SET_ALARM_MINUTE)
     {
         alarmMin++;
-        
+
         if (alarmMin > 59)
         {
             alarmMin = 0;
         }
-        
+
         blinkControl = 0;
         refreshSettingsDisplay();
     }
     else if (currentMode == MODE_SET_TEMP_SHOW)
     {
         tempertureShowTime++;
-        
+
         if (tempertureShowTime > TEMPERTURE_MAX_SHOW_TIME)
         {
             tempertureShowTime = tempertureHideTime == 0 ? 1 : 0;
         }
-        
+
         blinkControl = 0;
         refreshSettingsDisplay();
     }
     else if (currentMode == MODE_SET_TEMP_HIDE)
     {
         tempertureHideTime++;
-        
+
         if (tempertureHideTime > TEMPERTURE_MAX_HIDE_TIME)
         {
             tempertureHideTime = tempertureShowTime == 0 ? 1 : 0;
         }
-        
+
         blinkControl = 0;
         refreshSettingsDisplay();
     }
     else if (currentMode == MODE_SET_ROT_START)
     {
         ringOnTimeStart++;
-        
+
         if (ringOnTimeStart > 23)
         {
             ringOnTimeStart = 0;
         }
-        
+
         blinkControl = 0;
         refreshSettingsDisplay();
     }
     else if (currentMode == MODE_SET_ROT_STOP)
     {
         ringOnTimeStop++;
-        
+
         if (ringOnTimeStop > 23)
         {
             ringOnTimeStop = 0;
         }
-        
+
         blinkControl = 0;
         refreshSettingsDisplay();
     }
@@ -301,18 +300,17 @@ void set_key_pressed(void)
 void set_key_released(void)
 {
     uint32_t current_val;
-    
+
     current_val = HAL_GetTick();
-    
+
     if (lastSetKeyPressTime > current_val)
     {
         set_key_clicked();
     }
-    else if (current_val - lastSetKeyPressTime > KEY_CLICK_EFFECT_TIME 
-             && !setKeyRepeatReported)
+    else if (current_val - lastSetKeyPressTime > KEY_CLICK_EFFECT_TIME && !setKeyRepeatReported)
     {
         set_key_clicked();
     }
-    
+
     setKeyRepeatReported = false;
 }

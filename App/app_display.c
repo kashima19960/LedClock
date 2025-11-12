@@ -73,8 +73,8 @@ void refreshTimeDisplay()
         TM1637SetChar(3, 'C', false);
     }
 
-    checkAlarm();
-    checkRingOnTime();
+    checkAlarm(); // 检查是否需要触发闹钟
+    checkRingOnTime();// 检查整点报时
 }
 
 void refreshSettingsDisplay()

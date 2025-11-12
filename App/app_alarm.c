@@ -1,7 +1,9 @@
 #include "app_alarm.h"
 #include "app_state.h"
 #include "gpio.h"
-
+/*
+蜂鸣器低电平响，高电平静音
+*/
 void checkRingOnTime()
 {
     // 启用整点报时
@@ -33,7 +35,7 @@ void checkRingOnTime()
             }
         }
 
-        lastRingOnTimeHour = time.hours;  // 记录已报时,防止重复
+        lastRingOnTimeHour = time.hours; // 记录已报时,防止重复
     }
 }
 
@@ -46,8 +48,8 @@ void alarmStart()
 
 void alarmTimerTick()
 {
-    uint16_t onTime = 50, offTime = 50, restTime = 500;  // 单位:ms
-    uint8_t ringCounts = 4;  // 每轮响铃次数
+    uint16_t onTime = 50, offTime = 50, restTime = 500; // 单位:ms
+    uint8_t ringCounts = 4;                             // 每轮响铃次数
     alarmTimestamp++;
     if (HAL_GPIO_ReadPin(BUZZER_GPIO_PORT, BUZZER_PIN) == GPIO_PIN_RESET)
     {
