@@ -6,7 +6,6 @@ TIM_HandleTypeDef g_tim17_handle;
 static timer_interrupt_callback_t g_timer_interrupt_callback = NULL;
 void register_timer_interrupt_callback(timer_interrupt_callback_t callback)
 {
-
     g_timer_interrupt_callback = callback;
 }
 

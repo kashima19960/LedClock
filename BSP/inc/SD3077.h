@@ -209,12 +209,12 @@ typedef enum
     F_1_S        = 0x0F,
 } SD3077IntFreq;
 
-void TimeNow(DateTime *dateTime);
-void SetTime(DateTime *dateTime);
-void SetInterruptOuput(SD3077IntFreq freq);
-void EnableSencodInterruptOuput();
-void WriteBackData(uint8_t index, uint8_t *data, uint8_t size);
-void ReadBackData(uint8_t index, uint8_t *data, uint8_t size);
+void time_now(DateTime *dateTime);
+void set_time(DateTime *dateTime);
+void set_interrupt_output(SD3077IntFreq freq);
+void enable_second_interrupt_output();
+void write_backup_data(uint8_t index, uint8_t *data, uint8_t size);
+void read_backup_data(uint8_t index, uint8_t *data, uint8_t size);
 void sec_int_gpio_init(void);
 void sd3077_iic_init(void);
 #endif

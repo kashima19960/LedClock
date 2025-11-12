@@ -112,7 +112,7 @@ static void lock_write_protect(void)
 实时时钟数据寄存器是7字节(0x00~0x06)的存储器，它以BCD 码方式存贮包括年、月、日、星期、时、分、
 秒的数据。
 */
-void TimeNow(DateTime *dateTime)
+void time_now(DateTime *dateTime)
 {
     uint8_t data[7];
     HAL_I2C_Mem_Read(&SD3077_IIC_HANDLE, SD3077_IIC_ADDR_READ, 0x00, 1, data, 7, HAL_MAX_DELAY);
@@ -136,7 +136,7 @@ void TimeNow(DateTime *dateTime)
     dateTime->year = bcd2bin(data[6]);
 }
 
-void SetTime(DateTime *dateTime)
+void set_time(DateTime *dateTime)
 { // 解除写保护
     unlock_write_protect();
 
@@ -162,10 +162,10 @@ void SetTime(DateTime *dateTime)
     lock_write_protect();
 }
 
-void SetInterruptOuput(SD3077IntFreq freq)
+void set_interrupt_output(SD3077IntFreq freq)
 {
     // 解除写保护
-    UnlockWriteProtect();
+    unlock_write_protect();
 
     // 读出控制寄存器2和3
     uint8_t data[2];
@@ -193,7 +193,7 @@ void SetInterruptOuput(SD3077IntFreq freq)
 当设置 INTS1=1、INTSO=O时,即允许频率中断从INT脚输出．频率中断没有标志位.
 INT脚输出频率中断由控制寄存器3 中的FS3、FS2、FS1、FS0位来选择确定,1111表示1秒中断
 */
-void EnableSencodInterruptOuput()
+void enable_second_interrupt_output()
 { // 解除写保护
     unlock_write_protect();
 
@@ -222,23 +222,27 @@ void EnableSencodInterruptOuput()
 /*
 读写SD3077用户RAM(70bytes),范围:0x2C~0x71
 */
-void WriteBackData(uint8_t index, uint8_t *data, uint8_t size)
+void write_backup_data(uint8_t index, uint8_t *data, uint8_t size)
 {
     if (index > 69)
+    {
         return;
-
+    }
     // 解除写保护
     unlock_write_protect();
 
     // 写入备份寄存器
-    HAL_I2C_Mem_Write(&SD3077_IIC_HANDLE, SD3077_IIC_ADDR_WRITE, SD3077_REG_SRAM_START + index, 1, data, size, );
+    HAL_I2C_Mem_Write(&SD3077_IIC_HANDLE, SD3077_IIC_ADDR_WRITE, SD3077_REG_SRAM_START + index, 1, data, size,
+                      HAL_MAX_DELAY);
     lock_write_protect();
 }
 
-void ReadBackData(uint8_t index, uint8_t *data, uint8_t size)
+void read_backup_data(uint8_t index, uint8_t *data, uint8_t size)
 {
     if (index > 69)
+    {
         return;
+    }
 
     // 从备份寄存器读出
     HAL_I2C_Mem_Read(&SD3077_IIC_HANDLE, SD3077_IIC_ADDR_READ, SD3077_REG_SRAM_START + index, 1, data, size,

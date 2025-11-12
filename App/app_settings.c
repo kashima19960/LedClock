@@ -5,7 +5,7 @@
 void readBackupSettings()
 {
     uint8_t data[3];
-    ReadBackData(0, data, 3);
+    read_backup_data(0, data, 3);
 
     alarmHour = data[0];
     alarmMin = data[1];
@@ -38,7 +38,7 @@ void saveSettings()
     backupData[BAK_BRIGHTNESS_INDEX] = savedBrightness;
     backupData[BAK_BRIGHTNESS_STRONG_INDEX] = strongBrightness;
     backupData[BAK_BRIGHTNESS_WEAK_INDEX] = weakBrightness;
-    WriteBackData(BAK_POWER_DOWN_IND_INDEX, backupData, BAK_DATA_SIZE);
+    write_backup_data(BAK_POWER_DOWN_IND_INDEX, backupData, BAK_DATA_SIZE);
 }
 
 void resetSettings()

@@ -1,18 +1,18 @@
 #include "adc.h"
-#include "app_config.h"
-#include "app_state.h"
-#include "app_display.h"
 #include "app_alarm.h"
-#include "app_settings.h"
+#include "app_config.h"
+#include "app_display.h"
 #include "app_interrupt_handler.h"
+#include "app_settings.h"
+#include "app_state.h"
 #include "dma.h"
 #include "exti.h"
 #include "gpio.h"
-#include "tim.h"
+#include "key.h"
 #include "sd3077.h"
 #include "stdbool.h"
+#include "tim.h"
 #include "tm1637.h"
-#include "key.h"
 
 void SystemClock_Config(void);
 
@@ -31,8 +31,8 @@ int main(void)
     register_exti_interrupt_callback(exti_interrupt_handler);
     register_timer_interrupt_callback(tim_interrupt_handler);
     uint8_t backupData[BAK_DATA_SIZE];
-    ReadBackData(BAK_POWER_DOWN_IND_INDEX, backupData, BAK_DATA_SIZE);
-    //非正常关机，初始化时间为2020-01-01 00:00:00
+    read_backup_data(BAK_POWER_DOWN_IND_INDEX, backupData, BAK_DATA_SIZE);
+    // 非正常关机，初始化时间为2020-01-01 00:00:00
     if (backupData[0] != POWER_DOWN_IND_DATA && backupData[1] != POWER_DOWN_IND_DATA)
     {
         time.year = YEAR_MIN_SET;
@@ -43,12 +43,12 @@ int main(void)
         time.minutes = 0;
         time.ampm = HOUR24;
         time.seconds = 0;
-        SetTime(&time);
+        set_time(&time);
 
         resetSettings();
         saveSettings();
     }
-    else//正常关机，读取设置
+    else // 正常关机，读取设置
     {
         isAlarmEnabled = backupData[BAK_ALARM_ENABLED_INDEX];
         alarmHour = backupData[BAK_ALARM_HOUR_INDEX];
@@ -63,28 +63,22 @@ int main(void)
         weakBrightness = backupData[BAK_BRIGHTNESS_WEAK_INDEX];
     }
 
-    if (alarmHour > (uint8_t)23 || 
-        alarmMin > (uint8_t)59 || 
-        ringOnTimeStart > 23 || 
-        ringOnTimeStop > 23 ||
-        savedBrightness > 8 || 
-        strongBrightness > 8 || 
-        strongBrightness == 0 || 
-        weakBrightness > 8 ||
+    if (alarmHour > (uint8_t)23 || alarmMin > (uint8_t)59 || ringOnTimeStart > 23 || ringOnTimeStop > 23 ||
+        savedBrightness > 8 || strongBrightness > 8 || strongBrightness == 0 || weakBrightness > 8 ||
         weakBrightness == 0)
     {
         resetSettings();
-         saveSettings();
+        saveSettings();
     }
 
     tm1637_init();
     if (savedBrightness != 0)
     {
-        TM1637SetBrightness(savedBrightness);
+        tm1637_set_brightness(savedBrightness);
     }
     else
     {
-        TM1637SetBrightness(STRONG_BRIGHTNESS_VALUE);
+        tm1637_set_brightness(STRONG_BRIGHTNESS_VALUE);
         isWeakBrightness = false;
     }
 
@@ -94,17 +88,17 @@ int main(void)
 
     HAL_TIM_Base_Start_IT(&LIGHT_CONTROL_TIMER_HANDLE);
 
-    TimeNow(&time);
+    time_now(&time);
     lastRingOnTimeHour = time.hours;
 
-    EnableSencodInterruptOuput();
+    enable_second_interrupt_output();
 
     lastDisplayChangeTime = HAL_GetTick();
 
     isInitCompleted = true;
 
     uint32_t now = 0, passedTime;
-    //蜂鸣器高电平关闭，低电平响铃
+    // 蜂鸣器高电平关闭，低电平响铃
     while (1)
     {
         if (HAL_GPIO_ReadPin(BUZZER_GPIO_PORT, BUZZER_PIN) == GPIO_PIN_RESET && !isAlarming)
@@ -112,7 +106,7 @@ int main(void)
             now = HAL_GetTick();
             if (now < ringStartTime || (now - ringStartTime >= RING_ON_TIME_LONG))
             {
-                //关闭蜂鸣器
+                // 关闭蜂鸣器
                 HAL_GPIO_WritePin(BUZZER_GPIO_PORT, BUZZER_PIN, GPIO_PIN_SET);
             }
         }

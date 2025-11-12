@@ -25,13 +25,13 @@ void mode_key_clicked(void)
         currentMode = MODE_SET_HOUR;
         blinkControl = 0xFF;
         refreshSettingsDisplay();
-        SetInterruptOuput(F_2_HZ); /* 设置RTC输出2Hz用于闪烁 */
+        set_interrupt_output(F_2_HZ); /* 设置RTC输出2Hz用于闪烁 */
     }
     else if (currentMode == MODE_SHOW_SECOND)
     {
         /* 显示秒时按MODE键: 清零秒数 */
         lastTime.seconds = 0;
-        SetTime(&lastTime);
+        set_time(&lastTime);
         refreshTimeDisplay();
     }
     /* 设置模式: 逐级切换设置项 */
@@ -103,14 +103,14 @@ void mode_key_clicked(void)
     {
         currentMode = MODE_SET_BRIGHTNESS_WEAK;
         blinkControl = 0x00;
-        TM1637SetBrightness(weakBrightness);
+        tm1637_set_brightness(weakBrightness);
         refreshSettingsDisplay();
     }
     else if (currentMode == MODE_SET_BRIGHTNESS_WEAK)
     {
         currentMode = MODE_SET_ROT_ENABLE;
         blinkControl = 0x00;
-        TM1637SetBrightness(strongBrightness);
+        tm1637_set_brightness(strongBrightness);
         isWeakBrightness = false;
         refreshSettingsDisplay();
     }
@@ -121,15 +121,15 @@ void mode_key_clicked(void)
         if (!isRingOnTimeEnabled)//isRingOnTimeEnabled=false
         {
             currentMode = MODE_SHOW_TIME;
-            TimeNow(&time);
+            time_now(&time);
             lastTime.seconds = time.seconds;
-            SetTime(&lastTime);
+            set_time(&lastTime);
             lastRingOnTimeHour = lastTime.hours;
 
             saveSettings();
 
             refreshTimeDisplay();
-            EnableSencodInterruptOuput();
+            enable_second_interrupt_output();
             lastDisplayChangeTime = HAL_GetTick();
         }
         else
@@ -150,15 +150,15 @@ void mode_key_clicked(void)
         currentMode = MODE_SHOW_TIME;
 
         /* 将修改后的时间写入RTC */
-        TimeNow(&time);
+        time_now(&time);
         lastTime.seconds = time.seconds;
-        SetTime(&lastTime);
+        set_time(&lastTime);
         lastRingOnTimeHour = lastTime.hours;
 
         saveSettings(); /* 保存所有设置到备份寄存器 */
 
         refreshTimeDisplay();
-        EnableSencodInterruptOuput(); /* 恢复1Hz秒中断 */
+        enable_second_interrupt_output(); /* 恢复1Hz秒中断 */
         lastDisplayChangeTime = HAL_GetTick();
     }
 }

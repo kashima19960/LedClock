@@ -1,7 +1,7 @@
 #include "app_setkey.h"
-#include "app_alarm.h"
-#include "app_display.h"
 #include "app_state.h"
+#include "app_display.h"
+#include "app_alarm.h"
 #include "tm1637.h"
 
 /**
@@ -116,7 +116,7 @@ void set_key_clicked(void)
             savedBrightness = 0;
         }
 
-        TM1637SetBrightness(savedBrightness == 0 ? 1 : savedBrightness);
+        tm1637_set_brightness(savedBrightness == 0 ? 1 : savedBrightness);
         blinkControl = 0;
         refreshSettingsDisplay();
     }
@@ -130,7 +130,7 @@ void set_key_clicked(void)
         }
 
         blinkControl = 0;
-        TM1637SetBrightness(strongBrightness);
+        tm1637_set_brightness(strongBrightness);
         refreshSettingsDisplay();
     }
     else if (currentMode == MODE_SET_BRIGHTNESS_WEAK)
@@ -143,7 +143,7 @@ void set_key_clicked(void)
         }
 
         blinkControl = 0;
-        TM1637SetBrightness(weakBrightness);
+        tm1637_set_brightness(weakBrightness);
         refreshSettingsDisplay();
     }
     else if (currentMode == MODE_SET_ROT_ENABLE)

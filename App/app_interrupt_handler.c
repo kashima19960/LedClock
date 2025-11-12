@@ -3,7 +3,7 @@
 #include "app_modekey.h"
 #include "app_setkey.h"
 #include "app_state.h"
-
+#include "tm1637.h"
 void exti_interrupt_handler(uint16_t gpio_pin)
 {
     /* 秒中断处理 */
@@ -58,22 +58,24 @@ void tim_interrupt_handler(TIM_HandleTypeDef *htim)
     {
         if (savedBrightness == 0) // 自动亮度模式
         {
-            // 环境光线变强 -> 提高亮度
+            /* 环境光线变强 -> 提高亮度 */
             if (isWeakBrightness && adcValue[0] > STRONG_BRIGHTNESS_ADC_VALUE)
             {
                 isWeakBrightness = false;
+                
                 if (strongBrightness > 0)
                 {
-                    TM1637SetBrightness(strongBrightness);
+                    tm1637_set_brightness(strongBrightness);
                 }
             }
-            // 环境光线变弱 -> 降低亮度
+            /* 环境光线变弱 -> 降低亮度 */
             else if (!isWeakBrightness && adcValue[0] < WEAK_BRIGHTNESS_ADC_VALUE)
             {
                 isWeakBrightness = true;
+                
                 if (weakBrightness > 0)
                 {
-                    TM1637SetBrightness(weakBrightness);
+                    tm1637_set_brightness(weakBrightness);
                 }
             }
         }

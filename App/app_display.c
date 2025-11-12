@@ -46,19 +46,19 @@ void refreshTemperture()
 
 void refreshTimeDisplay()
 {
-    TimeNow(&time);  // 从SD3077 RTC读取当前时间
+    time_now(&time);  // 从SD3077 RTC读取当前时间
     lastTime = time;
     if (currentMode == MODE_SHOW_TIME)
     {
         uint16_t number = time.hours * 100 + time.minutes;
-        TM1637ShowNumberRight(3, number, blinkControl ? 2 : 0xFF, 1);
+        tm1637_show_number_right(3, number, blinkControl ? 2 : 0xFF, 1);
     }
     else if (currentMode == MODE_SHOW_SECOND)
     {
-        TM1637SetChar(0, ' ', false);
-        TM1637SetChar(1, ' ', true);
-        TM1637SetChar(2, time.seconds / 10 + '0', false);
-        TM1637SetChar(3, time.seconds % 10 + '0', false);
+        tm1637_set_char(0, ' ', false);
+        tm1637_set_char(1, ' ', true);
+        tm1637_set_char(2, time.seconds / 10 + '0', false);
+        tm1637_set_char(3, time.seconds % 10 + '0', false);
     }
     else if (currentMode == MODE_SHOW_TEMPERTURE)
     {
@@ -67,10 +67,10 @@ void refreshTimeDisplay()
         {
             temperture = 99;
         }
-        TM1637SetChar(0, ' ', false);
-        TM1637SetChar(1, temperture / 10 + '0', false);
-        TM1637SetChar(2, temperture % 10 + '0', false);
-        TM1637SetChar(3, 'C', false);
+        tm1637_set_char(0, ' ', false);
+        tm1637_set_char(1, temperture / 10 + '0', false);
+        tm1637_set_char(2, temperture % 10 + '0', false);
+        tm1637_set_char(3, 'C', false);
     }
 
     checkAlarm(); // 检查是否需要触发闹钟
@@ -180,8 +180,8 @@ void refreshSettingsDisplay()
         disp[3] = blinkControl ? ' ' : ringOnTimeStop % 10 + '0';
     }
 
-    TM1637SetChar(0, disp[0], false);
-    TM1637SetChar(1, disp[1], true);
-    TM1637SetChar(2, disp[2], false);
-    TM1637SetChar(3, disp[3], false);
+    tm1637_set_char(0, disp[0], false);
+    tm1637_set_char(1, disp[1], true);
+    tm1637_set_char(2, disp[2], false);
+    tm1637_set_char(3, disp[3], false);
 }
