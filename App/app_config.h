@@ -3,8 +3,8 @@
 
 #include "stm32f0xx_hal.h"
 
-#define USE_HAL_DRIVER
-#define STM32F030x6
+//#define USE_HAL_DRIVER
+//#define STM32F030x6
 
 #define KEY_LONG_PRESS_EFFECT_TIME 800
 #define KEY_REPEAT_TIME_INTERVAL 250

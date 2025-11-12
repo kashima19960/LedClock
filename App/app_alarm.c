@@ -1,6 +1,5 @@
 #include "app_alarm.h"
 #include "app_state.h"
-#include "gpio.h"
 /*
 蜂鸣器低电平响，高电平静音
 */

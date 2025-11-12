@@ -5,7 +5,7 @@
 
 void checkRingOnTime(void);
 void alarmStart(void);
-void alarmTimerTick(void);
+void alarmTimerTick();
 void alarmStop(void);
 void checkAlarm(void);
 

@@ -338,7 +338,7 @@
               <MiscControls></MiscControls>
               <Define>USE_HAL_DRIVER,STM32F030x6</Define>
               <Undefine></Undefine>
-              <IncludePath>.\BSP\inc;.\Drivers\CMSIS\Include;.\Drivers\CMSIS\Device\ST\STM32F0xx\Include;.\Drivers\STM32F0xx_HAL_Driver\Inc</IncludePath>
+              <IncludePath>.\BSP\inc;.\Drivers\CMSIS\Include;.\Drivers\CMSIS\Device\ST\STM32F0xx\Include;.\Drivers\STM32F0xx_HAL_Driver\Inc;.\App</IncludePath>
             </VariousControls>
           </Cads>
           <Aads>
@@ -381,15 +381,203 @@
       <Groups>
         <Group>
           <GroupName>App</GroupName>
+          <Files>
+            <File>
+              <FileName>app_alarm.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\App\app_alarm.c</FilePath>
+            </File>
+            <File>
+              <FileName>app_display.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\App\app_display.c</FilePath>
+            </File>
+            <File>
+              <FileName>app_interrupt_handler.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\App\app_interrupt_handler.c</FilePath>
+            </File>
+            <File>
+              <FileName>app_modekey.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\App\app_modekey.c</FilePath>
+            </File>
+            <File>
+              <FileName>app_setkey.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\App\app_setkey.c</FilePath>
+            </File>
+            <File>
+              <FileName>app_settings.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\App\app_settings.c</FilePath>
+            </File>
+            <File>
+              <FileName>app_state.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\App\app_state.c</FilePath>
+            </File>
+            <File>
+              <FileName>main.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\App\main.c</FilePath>
+            </File>
+            <File>
+              <FileName>stm32f0xx_hal_msp.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\App\stm32f0xx_hal_msp.c</FilePath>
+            </File>
+            <File>
+              <FileName>system_stm32f0xx.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\App\system_stm32f0xx.c</FilePath>
+            </File>
+          </Files>
         </Group>
         <Group>
           <GroupName>BSP</GroupName>
+          <Files>
+            <File>
+              <FileName>adc.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\BSP\src\adc.c</FilePath>
+            </File>
+            <File>
+              <FileName>dma.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\BSP\src\dma.c</FilePath>
+            </File>
+            <File>
+              <FileName>exti.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\BSP\src\exti.c</FilePath>
+            </File>
+            <File>
+              <FileName>key.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\BSP\src\key.c</FilePath>
+            </File>
+            <File>
+              <FileName>sd3077.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\BSP\src\sd3077.c</FilePath>
+            </File>
+            <File>
+              <FileName>syscalls.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\BSP\src\syscalls.c</FilePath>
+            </File>
+            <File>
+              <FileName>tim.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\BSP\src\tim.c</FilePath>
+            </File>
+            <File>
+              <FileName>tm1637.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\BSP\src\tm1637.c</FilePath>
+            </File>
+          </Files>
         </Group>
         <Group>
           <GroupName>HAL</GroupName>
+          <Files>
+            <File>
+              <FileName>stm32f0xx_hal.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\Drivers\STM32F0xx_HAL_Driver\Src\stm32f0xx_hal.c</FilePath>
+            </File>
+            <File>
+              <FileName>stm32f0xx_hal_adc.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\Drivers\STM32F0xx_HAL_Driver\Src\stm32f0xx_hal_adc.c</FilePath>
+            </File>
+            <File>
+              <FileName>stm32f0xx_hal_adc_ex.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\Drivers\STM32F0xx_HAL_Driver\Src\stm32f0xx_hal_adc_ex.c</FilePath>
+            </File>
+            <File>
+              <FileName>stm32f0xx_hal_cortex.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\Drivers\STM32F0xx_HAL_Driver\Src\stm32f0xx_hal_cortex.c</FilePath>
+            </File>
+            <File>
+              <FileName>stm32f0xx_hal_dma.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\Drivers\STM32F0xx_HAL_Driver\Src\stm32f0xx_hal_dma.c</FilePath>
+            </File>
+            <File>
+              <FileName>stm32f0xx_hal_exti.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\Drivers\STM32F0xx_HAL_Driver\Src\stm32f0xx_hal_exti.c</FilePath>
+            </File>
+            <File>
+              <FileName>stm32f0xx_hal_flash.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\Drivers\STM32F0xx_HAL_Driver\Src\stm32f0xx_hal_flash.c</FilePath>
+            </File>
+            <File>
+              <FileName>stm32f0xx_hal_flash_ex.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\Drivers\STM32F0xx_HAL_Driver\Src\stm32f0xx_hal_flash_ex.c</FilePath>
+            </File>
+            <File>
+              <FileName>stm32f0xx_hal_gpio.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\Drivers\STM32F0xx_HAL_Driver\Src\stm32f0xx_hal_gpio.c</FilePath>
+            </File>
+            <File>
+              <FileName>stm32f0xx_hal_i2c.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\Drivers\STM32F0xx_HAL_Driver\Src\stm32f0xx_hal_i2c.c</FilePath>
+            </File>
+            <File>
+              <FileName>stm32f0xx_hal_i2c_ex.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\Drivers\STM32F0xx_HAL_Driver\Src\stm32f0xx_hal_i2c_ex.c</FilePath>
+            </File>
+            <File>
+              <FileName>stm32f0xx_hal_pwr.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\Drivers\STM32F0xx_HAL_Driver\Src\stm32f0xx_hal_pwr.c</FilePath>
+            </File>
+            <File>
+              <FileName>stm32f0xx_hal_pwr_ex.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\Drivers\STM32F0xx_HAL_Driver\Src\stm32f0xx_hal_pwr_ex.c</FilePath>
+            </File>
+            <File>
+              <FileName>stm32f0xx_hal_rcc.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\Drivers\STM32F0xx_HAL_Driver\Src\stm32f0xx_hal_rcc.c</FilePath>
+            </File>
+            <File>
+              <FileName>stm32f0xx_hal_rcc_ex.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\Drivers\STM32F0xx_HAL_Driver\Src\stm32f0xx_hal_rcc_ex.c</FilePath>
+            </File>
+            <File>
+              <FileName>stm32f0xx_hal_tim.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\Drivers\STM32F0xx_HAL_Driver\Src\stm32f0xx_hal_tim.c</FilePath>
+            </File>
+            <File>
+              <FileName>stm32f0xx_hal_tim_ex.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\Drivers\STM32F0xx_HAL_Driver\Src\stm32f0xx_hal_tim_ex.c</FilePath>
+            </File>
+          </Files>
         </Group>
         <Group>
           <GroupName>StartUp</GroupName>
+          <Files>
+            <File>
+              <FileName>startup_stm32f030x6.s</FileName>
+              <FileType>2</FileType>
+              <FilePath>.\StartUp\startup_stm32f030x6.s</FilePath>
+            </File>
+          </Files>
         </Group>
         <Group>
           <GroupName>CMSIS</GroupName>

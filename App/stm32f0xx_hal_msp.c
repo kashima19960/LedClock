@@ -20,7 +20,7 @@
 /* USER CODE END Header */
 
 /* Includes ------------------------------------------------------------------*/
-#include "common.h"
+#include "app_config.h"
 
 /* USER CODE BEGIN Includes */
 
