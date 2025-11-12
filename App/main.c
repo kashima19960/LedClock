@@ -7,7 +7,6 @@
 #include "app_state.h"
 #include "dma.h"
 #include "exti.h"
-#include "gpio.h"
 #include "key.h"
 #include "sd3077.h"
 #include "stdbool.h"
@@ -82,9 +81,9 @@ int main(void)
         isWeakBrightness = false;
     }
 
-    HAL_ADCEx_Calibration_Start(&hadc);
-    HAL_ADC_Start_DMA(&hadc, adcValue, 2);
-    HAL_TIM_Base_Start(&htim3);
+    HAL_ADCEx_Calibration_Start(&g_adc_handle);
+    HAL_ADC_Start_DMA(&g_adc_handle, adcValue, 2);
+    HAL_TIM_Base_Start(&g_tim3_handle);
 
     HAL_TIM_Base_Start_IT(&LIGHT_CONTROL_TIMER_HANDLE);
 
@@ -149,7 +148,7 @@ int main(void)
             {
                 if (curVal - lastSetKeyPressReportTime > KEY_REPEAT_TIME_INTERVAL)
                 {
-                    setKeyPresseRepeatReport();
+                    set_key_presse_repeat_report();
                     lastSetKeyPressReportTime = curVal;
                 }
             }

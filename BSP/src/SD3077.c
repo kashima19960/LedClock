@@ -1,31 +1,31 @@
 #include "sd3077.h"
 #include "app_config.h"
-I2C_HandleTypeDef g_iic_init_struct;
+I2C_HandleTypeDef g_iic_handle;
 /*
 sd3077硬件上接了，PA9--I2C1_SCL,PA10--I2C1_SDA,PB1--SEC-INT
 */
 void sd3077_iic_init(void)
 {
-    g_iic_init_struct.Instance = I2C1;
-    g_iic_init_struct.Init.Timing = 0x0000020B;
-    g_iic_init_struct.Init.OwnAddress1 = 0;
-    g_iic_init_struct.Init.AddressingMode = I2C_ADDRESSINGMODE_7BIT;
-    g_iic_init_struct.Init.DualAddressMode = I2C_DUALADDRESS_DISABLE;
-    g_iic_init_struct.Init.OwnAddress2 = 0;
-    g_iic_init_struct.Init.OwnAddress2Masks = I2C_OA2_NOMASK;
-    g_iic_init_struct.Init.GeneralCallMode = I2C_GENERALCALL_DISABLE;
-    g_iic_init_struct.Init.NoStretchMode = I2C_NOSTRETCH_DISABLE;
-    if (HAL_I2C_Init(&g_iic_init_struct) != HAL_OK)
+    g_iic_handle.Instance = I2C1;
+    g_iic_handle.Init.Timing = 0x0000020B;
+    g_iic_handle.Init.OwnAddress1 = 0;
+    g_iic_handle.Init.AddressingMode = I2C_ADDRESSINGMODE_7BIT;
+    g_iic_handle.Init.DualAddressMode = I2C_DUALADDRESS_DISABLE;
+    g_iic_handle.Init.OwnAddress2 = 0;
+    g_iic_handle.Init.OwnAddress2Masks = I2C_OA2_NOMASK;
+    g_iic_handle.Init.GeneralCallMode = I2C_GENERALCALL_DISABLE;
+    g_iic_handle.Init.NoStretchMode = I2C_NOSTRETCH_DISABLE;
+    if (HAL_I2C_Init(&g_iic_handle) != HAL_OK)
     {
         Error_Handler();
     }
 
-    if (HAL_I2CEx_ConfigAnalogFilter(&g_iic_init_struct, I2C_ANALOGFILTER_ENABLE) != HAL_OK)
+    if (HAL_I2CEx_ConfigAnalogFilter(&g_iic_handle, I2C_ANALOGFILTER_ENABLE) != HAL_OK)
     {
         Error_Handler();
     }
 
-    if (HAL_I2CEx_ConfigDigitalFilter(&g_iic_init_struct, 0) != HAL_OK)
+    if (HAL_I2CEx_ConfigDigitalFilter(&g_iic_handle, 0) != HAL_OK)
     {
         Error_Handler();
     }
@@ -33,7 +33,7 @@ void sd3077_iic_init(void)
 void sec_int_gpio_init(void)
 {
     GPIO_InitTypeDef gpio_init_struct = {0};
-    SD3077_SEC_INT_GPIO_CLK_ENABLE();
+    //SD3077_SEC_INT_GPIO_CLK_ENABLE();
     gpio_init_struct.Pin = SEC_INT_PIN;
     gpio_init_struct.Mode = GPIO_MODE_IT_FALLING;
     gpio_init_struct.Pull = GPIO_PULLUP;

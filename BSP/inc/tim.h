@@ -1,6 +1,6 @@
 #ifndef __TIM_H
 #define __TIM_H
-#include "common.h"
+#include "app_config.h"
 
 extern TIM_HandleTypeDef g_tim3_handle;
 extern TIM_HandleTypeDef g_tim16_handle;

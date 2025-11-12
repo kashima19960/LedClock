@@ -1,5 +1,5 @@
 #include "dma.h"
-
+#include "sd3077.h"
 void dma_init(void)
 {
   __HAL_RCC_DMA1_CLK_ENABLE();
@@ -9,5 +9,5 @@ void dma_init(void)
 }
 void DMA1_Channel1_IRQHandler(void)
 {
-    HAL_DMA_IRQHandler(&hdma_adc);
+    HAL_DMA_IRQHandler(&g_dma_adc_handle);
 }

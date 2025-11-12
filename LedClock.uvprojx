@@ -54,7 +54,7 @@
           <CreateLib>0</CreateLib>
           <CreateHexFile>1</CreateHexFile>
           <DebugInformation>1</DebugInformation>
-          <BrowseInformation>1</BrowseInformation>
+          <BrowseInformation>0</BrowseInformation>
           <ListingPath>.\Output\</ListingPath>
           <HexFormatSelection>1</HexFormatSelection>
           <Merge32K>0</Merge32K>
@@ -312,7 +312,7 @@
           </ArmAdsMisc>
           <Cads>
             <interw>1</interw>
-            <Optim>1</Optim>
+            <Optim>0</Optim>
             <oTime>0</oTime>
             <SplitLS>0</SplitLS>
             <OneElfS>1</OneElfS>
@@ -432,6 +432,51 @@
               <FileType>1</FileType>
               <FilePath>.\App\system_stm32f0xx.c</FilePath>
             </File>
+            <File>
+              <FileName>app_alarm.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>.\App\app_alarm.h</FilePath>
+            </File>
+            <File>
+              <FileName>app_config.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>.\App\app_config.h</FilePath>
+            </File>
+            <File>
+              <FileName>app_display.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>.\App\app_display.h</FilePath>
+            </File>
+            <File>
+              <FileName>app_interrupt_handler.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>.\App\app_interrupt_handler.h</FilePath>
+            </File>
+            <File>
+              <FileName>app_modekey.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>.\App\app_modekey.h</FilePath>
+            </File>
+            <File>
+              <FileName>app_setkey.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>.\App\app_setkey.h</FilePath>
+            </File>
+            <File>
+              <FileName>app_settings.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>.\App\app_settings.h</FilePath>
+            </File>
+            <File>
+              <FileName>app_state.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>.\App\app_state.h</FilePath>
+            </File>
+            <File>
+              <FileName>stm32f0xx_hal_conf.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>.\App\stm32f0xx_hal_conf.h</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>
@@ -461,11 +506,6 @@
               <FileName>sd3077.c</FileName>
               <FileType>1</FileType>
               <FilePath>.\BSP\src\sd3077.c</FilePath>
-            </File>
-            <File>
-              <FileName>syscalls.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>.\BSP\src\syscalls.c</FilePath>
             </File>
             <File>
               <FileName>tim.c</FileName>
@@ -575,7 +615,7 @@
             <File>
               <FileName>startup_stm32f030x6.s</FileName>
               <FileType>2</FileType>
-              <FilePath>.\StartUp\startup_stm32f030x6.s</FilePath>
+              <FilePath>.\Drivers\CMSIS\Device\ST\STM32F0xx\Source\Templates\startup_stm32f030x6.s</FilePath>
             </File>
           </Files>
         </Group>

@@ -4,9 +4,12 @@
 #include "stm32f0xx_hal.h"
 
 /* IIC句柄 */
-#define SD3077_IIC_HANDLE      hi2c1
+#define SD3077_IIC_HANDLE      g_iic_handle
+extern I2C_HandleTypeDef SD3077_IIC_HANDLE;
+extern DMA_HandleTypeDef g_dma_adc_handle;
 #define SD3077_IIC_CLK_ENABLE() __HAL_RCC_I2C1_CLK_ENABLE()
 #define SD3077_IIC_GPIO_CLK_ENABLE() __HAL_RCC_GPIOA_CLK_ENABLE()
+#define SD3077_SEC_INT_GPIO_CLK_ENABLE  __HAL_RCC_GPIOB_CLK_ENABLE()
 /*
 设BCD码的高4位（十位数）为 T，低4位（个位数）为 O
 val为：val = T * 16 + O

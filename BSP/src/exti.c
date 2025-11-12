@@ -2,8 +2,7 @@
 
 #include "app_config.h" 
 
-#include "stm32f0xx_it.h" 
-extern DMA_HandleTypeDef hdma_adc;
+extern DMA_HandleTypeDef g_dma_adc_handle;
 
 
 /* 全局回调函数指针 */
