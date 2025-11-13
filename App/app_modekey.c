@@ -24,7 +24,7 @@ void mode_key_clicked(void)
     {
         currentMode = MODE_SET_HOUR;
         blinkControl = 0xFF;
-        refreshSettingsDisplay();
+        refresh_settings_display();
         set_interrupt_output(F_2_HZ); /* 设置RTC输出2Hz用于闪烁 */
     }
     else if (currentMode == MODE_SHOW_SECOND)
@@ -32,38 +32,38 @@ void mode_key_clicked(void)
         /* 显示秒时按MODE键: 清零秒数 */
         lastTime.seconds = 0;
         set_time(&lastTime);
-        refreshTimeDisplay();
+        refresh_time_display();
     }
     /* 设置模式: 逐级切换设置项 */
     else if (currentMode == MODE_SET_HOUR)
     {
         currentMode = MODE_SET_MINUTE;
         blinkControl = 0xFF;
-        refreshSettingsDisplay();
+        refresh_settings_display();
     }
     else if (currentMode == MODE_SET_MINUTE)
     {
         currentMode = MODE_SET_ALARM_ENABLE;
         blinkControl = 0x00;
-        refreshSettingsDisplay();
+        refresh_settings_display();
     }
     else if (currentMode == MODE_SET_ALARM_ENABLE)
     {
         currentMode = isAlarmEnabled ? MODE_SET_ALARM_HOUR : MODE_SET_TEMP_SHOW;
         blinkControl = 0xFF;
-        refreshSettingsDisplay();
+        refresh_settings_display();
     }
     else if (currentMode == MODE_SET_ALARM_HOUR)
     {
         currentMode = MODE_SET_ALARM_MINUTE;
         blinkControl = 0xFF;
-        refreshSettingsDisplay();
+        refresh_settings_display();
     }
     else if (currentMode == MODE_SET_ALARM_MINUTE)
     {
         currentMode = MODE_SET_TEMP_SHOW;
         blinkControl = 0x00;
-        refreshSettingsDisplay();
+        refresh_settings_display();
     }
     else if (currentMode == MODE_SET_TEMP_SHOW)
     {
@@ -77,13 +77,13 @@ void mode_key_clicked(void)
         }
 
         blinkControl = 0x00;
-        refreshSettingsDisplay();
+        refresh_settings_display();
     }
     else if (currentMode == MODE_SET_TEMP_HIDE)
     {
         currentMode = MODE_SET_BRIGHTNESS;
         blinkControl = 0x00;
-        refreshSettingsDisplay();
+        refresh_settings_display();
     }
     else if (currentMode == MODE_SET_BRIGHTNESS)
     {
@@ -97,14 +97,14 @@ void mode_key_clicked(void)
         }
 
         blinkControl = 0x00;
-        refreshSettingsDisplay();
+        refresh_settings_display();
     }
     else if (currentMode == MODE_SET_BRIGHTNESS_STRONG)
     {
         currentMode = MODE_SET_BRIGHTNESS_WEAK;
         blinkControl = 0x00;
         tm1637_set_brightness(weakBrightness);
-        refreshSettingsDisplay();
+        refresh_settings_display();
     }
     else if (currentMode == MODE_SET_BRIGHTNESS_WEAK)
     {
@@ -112,7 +112,7 @@ void mode_key_clicked(void)
         blinkControl = 0x00;
         tm1637_set_brightness(strongBrightness);
         isWeakBrightness = false;
-        refreshSettingsDisplay();
+        refresh_settings_display();
     }
     else if (currentMode == MODE_SET_ROT_ENABLE)
     {
@@ -128,21 +128,21 @@ void mode_key_clicked(void)
 
             saveSettings();
 
-            refreshTimeDisplay();
+            refresh_time_display();
             enable_second_interrupt_output();
             lastDisplayChangeTime = HAL_GetTick();
         }
         else
         {
             currentMode = MODE_SET_ROT_START;
-            refreshSettingsDisplay();
+            refresh_settings_display();
         }
     }
     else if (currentMode == MODE_SET_ROT_START)
     {
         currentMode = MODE_SET_ROT_STOP;
         blinkControl = 0x00;
-        refreshSettingsDisplay();
+        refresh_settings_display();
     }
     else if (currentMode == MODE_SET_ROT_STOP)
     {
@@ -157,7 +157,7 @@ void mode_key_clicked(void)
 
         saveSettings(); /* 保存所有设置到备份寄存器 */
 
-        refreshTimeDisplay();
+        refresh_time_display();
         enable_second_interrupt_output(); /* 恢复1Hz秒中断 */
         lastDisplayChangeTime = HAL_GetTick();
     }
@@ -178,7 +178,7 @@ void mode_key_long_pressed(void)
     if (currentMode >= MODE_SET_HOUR && currentMode <= MODE_SET_ROT_STOP)
     {
         currentMode = MODE_SHOW_TIME; /* 放弃修改,直接退出 */
-        refreshTimeDisplay();
+        refresh_time_display();
         lastDisplayChangeTime = HAL_GetTick();
     }
 }

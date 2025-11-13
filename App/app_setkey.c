@@ -20,12 +20,12 @@ void set_key_clicked(void)
     if (currentMode == MODE_SHOW_TIME || currentMode == MODE_SHOW_TEMPERTURE)
     {
         currentMode = MODE_SHOW_SECOND;
-        refreshTimeDisplay();
+        refresh_time_display();
     }
     else if (currentMode == MODE_SHOW_SECOND)
     {
         currentMode = MODE_SHOW_TIME; /* 返回显示时间 */
-        refreshTimeDisplay();
+        refresh_time_display();
         lastDisplayChangeTime = HAL_GetTick();
     }
     /* 设置模式: 增加当前设置项的值 */
@@ -39,7 +39,7 @@ void set_key_clicked(void)
         }
 
         blinkControl = 0;
-        refreshSettingsDisplay();
+        refresh_settings_display();
     }
     else if (currentMode == MODE_SET_MINUTE)
     {
@@ -51,13 +51,13 @@ void set_key_clicked(void)
         }
 
         blinkControl = 0;
-        refreshSettingsDisplay();
+        refresh_settings_display();
     }
     else if (currentMode == MODE_SET_ALARM_ENABLE)
     {
         isAlarmEnabled = isAlarmEnabled ? false : true;
         blinkControl = 0;
-        refreshSettingsDisplay();
+        refresh_settings_display();
     }
     else if (currentMode == MODE_SET_ALARM_HOUR)
     {
@@ -69,7 +69,7 @@ void set_key_clicked(void)
         }
 
         blinkControl = 0;
-        refreshSettingsDisplay();
+        refresh_settings_display();
     }
     else if (currentMode == MODE_SET_ALARM_MINUTE)
     {
@@ -81,7 +81,7 @@ void set_key_clicked(void)
         }
 
         blinkControl = 0;
-        refreshSettingsDisplay();
+        refresh_settings_display();
     }
     else if (currentMode == MODE_SET_TEMP_SHOW)
     {
@@ -93,7 +93,7 @@ void set_key_clicked(void)
         }
 
         blinkControl = 0;
-        refreshSettingsDisplay();
+        refresh_settings_display();
     }
     else if (currentMode == MODE_SET_TEMP_HIDE)
     {
@@ -105,7 +105,7 @@ void set_key_clicked(void)
         }
 
         blinkControl = 0;
-        refreshSettingsDisplay();
+        refresh_settings_display();
     }
     else if (currentMode == MODE_SET_BRIGHTNESS)
     {
@@ -118,7 +118,7 @@ void set_key_clicked(void)
 
         tm1637_set_brightness(savedBrightness == 0 ? 1 : savedBrightness);
         blinkControl = 0;
-        refreshSettingsDisplay();
+        refresh_settings_display();
     }
     else if (currentMode == MODE_SET_BRIGHTNESS_STRONG)
     {
@@ -131,7 +131,7 @@ void set_key_clicked(void)
 
         blinkControl = 0;
         tm1637_set_brightness(strongBrightness);
-        refreshSettingsDisplay();
+        refresh_settings_display();
     }
     else if (currentMode == MODE_SET_BRIGHTNESS_WEAK)
     {
@@ -144,13 +144,13 @@ void set_key_clicked(void)
 
         blinkControl = 0;
         tm1637_set_brightness(weakBrightness);
-        refreshSettingsDisplay();
+        refresh_settings_display();
     }
     else if (currentMode == MODE_SET_ROT_ENABLE)
     {
         isRingOnTimeEnabled = isRingOnTimeEnabled ? false : true;
         blinkControl = 0;
-        refreshSettingsDisplay();
+        refresh_settings_display();
     }
     else if (currentMode == MODE_SET_ROT_START)
     {
@@ -162,7 +162,7 @@ void set_key_clicked(void)
         }
 
         blinkControl = 0;
-        refreshSettingsDisplay();
+        refresh_settings_display();
     }
     else if (currentMode == MODE_SET_ROT_STOP)
     {
@@ -174,7 +174,7 @@ void set_key_clicked(void)
         }
 
         blinkControl = 0;
-        refreshSettingsDisplay();
+        refresh_settings_display();
     }
 }
 
@@ -197,7 +197,7 @@ void set_key_presse_repeat_report(void)
         }
 
         blinkControl = 0;
-        refreshSettingsDisplay();
+        refresh_settings_display();
     }
     else if (currentMode == MODE_SET_MINUTE)
     {
@@ -209,7 +209,7 @@ void set_key_presse_repeat_report(void)
         }
 
         blinkControl = 0;
-        refreshSettingsDisplay();
+        refresh_settings_display();
     }
     else if (currentMode == MODE_SET_ALARM_HOUR)
     {
@@ -221,7 +221,7 @@ void set_key_presse_repeat_report(void)
         }
 
         blinkControl = 0;
-        refreshSettingsDisplay();
+        refresh_settings_display();
     }
     else if (currentMode == MODE_SET_ALARM_MINUTE)
     {
@@ -233,7 +233,7 @@ void set_key_presse_repeat_report(void)
         }
 
         blinkControl = 0;
-        refreshSettingsDisplay();
+        refresh_settings_display();
     }
     else if (currentMode == MODE_SET_TEMP_SHOW)
     {
@@ -245,7 +245,7 @@ void set_key_presse_repeat_report(void)
         }
 
         blinkControl = 0;
-        refreshSettingsDisplay();
+        refresh_settings_display();
     }
     else if (currentMode == MODE_SET_TEMP_HIDE)
     {
@@ -257,7 +257,7 @@ void set_key_presse_repeat_report(void)
         }
 
         blinkControl = 0;
-        refreshSettingsDisplay();
+        refresh_settings_display();
     }
     else if (currentMode == MODE_SET_ROT_START)
     {
@@ -269,7 +269,7 @@ void set_key_presse_repeat_report(void)
         }
 
         blinkControl = 0;
-        refreshSettingsDisplay();
+        refresh_settings_display();
     }
     else if (currentMode == MODE_SET_ROT_STOP)
     {
@@ -281,7 +281,7 @@ void set_key_presse_repeat_report(void)
         }
 
         blinkControl = 0;
-        refreshSettingsDisplay();
+        refresh_settings_display();
     }
 }
 

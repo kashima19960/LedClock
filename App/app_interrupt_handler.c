@@ -11,12 +11,12 @@ void exti_interrupt_handler(uint16_t gpio_pin)
     {
         if (currentMode == MODE_SHOW_TIME || currentMode == MODE_SHOW_SECOND || currentMode == MODE_SHOW_TEMPERTURE)
         {
-            refreshTimeDisplay();
+            refresh_time_display();
         }
         else if (currentMode >= MODE_SET_HOUR && currentMode <= MODE_SET_ROT_STOP)
         {
             // 这个函数用来控制字符的闪烁的显示，不起到实际更改设置的作用
-            refreshSettingsDisplay();
+            refresh_settings_display();
         }
 
         blinkControl = ~blinkControl;

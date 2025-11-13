@@ -4,7 +4,7 @@
 #include "sd3077.h"
 #include "app_alarm.h"
 
-void refreshTemperture()
+void refresh_temperture()
 {
     // 开启温度转换ADC
 
@@ -44,7 +44,7 @@ void refreshTemperture()
     return;
 }
 
-void refreshTimeDisplay()
+void refresh_time_display()
 {
     time_now(&time);  // 从SD3077 RTC读取当前时间
     lastTime = time;
@@ -62,7 +62,7 @@ void refreshTimeDisplay()
     }
     else if (currentMode == MODE_SHOW_TEMPERTURE)
     {
-        refreshTemperture();
+        refresh_temperture();
         if (temperture > 99)
         {
             temperture = 99;
@@ -77,7 +77,7 @@ void refreshTimeDisplay()
     checkRingOnTime();// 检查整点报时
 }
 
-void refreshSettingsDisplay()
+void refresh_settings_display()
 {
     char disp[5] = {0};  // 4位数码管显示缓冲
     if (currentMode == MODE_SET_HOUR)

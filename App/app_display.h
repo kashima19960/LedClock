@@ -3,8 +3,8 @@
 
 #include "app_config.h"
 
-void refreshTimeDisplay(void);
-void refreshTemperture(void);
-void refreshSettingsDisplay(void);
+void refresh_time_display(void);
+void refresh_temperture(void);
+void refresh_settings_display(void);
 
 #endif
