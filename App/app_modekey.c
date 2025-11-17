@@ -15,7 +15,7 @@ void mode_key_clicked(void)
     /* 响铃时任意键停止 */
     if (isAlarming)
     {
-        alarmStop();
+        alarm_stop();
         return;
     }
 
@@ -126,7 +126,7 @@ void mode_key_clicked(void)
             set_time(&lastTime);
             lastRingOnTimeHour = lastTime.hours;
 
-            saveSettings();
+            save_settings();
 
             refresh_time_display();
             enable_second_interrupt_output();
@@ -155,7 +155,7 @@ void mode_key_clicked(void)
         set_time(&lastTime);
         lastRingOnTimeHour = lastTime.hours;
 
-        saveSettings(); /* 保存所有设置到备份寄存器 */
+        save_settings(); /* 保存所有设置到备份寄存器 */
 
         refresh_time_display();
         enable_second_interrupt_output(); /* 恢复1Hz秒中断 */
@@ -171,7 +171,7 @@ void mode_key_long_pressed(void)
 {
     if (isAlarming)
     {
-        alarmStop();
+        alarm_stop();
         return;
     }
 

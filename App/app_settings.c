@@ -2,7 +2,7 @@
 #include "app_state.h"
 #include "sd3077.h"
 
-void readBackupSettings()
+void read_backup_settings()
 {
     uint8_t data[3];
     read_backup_data(0, data, 3);
@@ -22,7 +22,7 @@ void readBackupSettings()
     }
 }
 
-void saveSettings()
+void save_settings()
 {
     uint8_t backupData[BAK_DATA_SIZE];
     backupData[BAK_POWER_DOWN_IND_INDEX] = POWER_DOWN_IND_DATA;
@@ -41,7 +41,7 @@ void saveSettings()
     write_backup_data(BAK_POWER_DOWN_IND_INDEX, backupData, BAK_DATA_SIZE);
 }
 
-void resetSettings()
+void reset_settings()
 {
     isAlarmEnabled = false;
     alarmHour = 0;

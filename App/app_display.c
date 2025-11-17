@@ -73,7 +73,7 @@ void refresh_time_display()
         tm1637_set_char(3, 'C', false);
     }
 
-    checkAlarm(); // 检查是否需要触发闹钟
+    check_alarm(); // 检查是否需要触发闹钟
     checkRingOnTime();// 检查整点报时
 }
 

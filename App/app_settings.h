@@ -3,8 +3,8 @@
 
 #include "app_config.h"
 
-void readBackupSettings(void);
-void saveSettings(void);
-void resetSettings(void);
+void read_backup_settings(void);
+void save_settings(void);
+void reset_settings(void);
 
 #endif

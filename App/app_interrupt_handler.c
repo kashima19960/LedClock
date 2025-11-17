@@ -51,7 +51,7 @@ void tim_interrupt_handler(TIM_HandleTypeDef *htim)
     // TIM17: 闹钟响铃节奏控制
     if (htim->Instance == ALARM_CONTROL_TIMER)
     {
-        alarmTimerTick(); // 控制蜂鸣器响铃节奏
+        alarm_timer_tick(); // 控制蜂鸣器响铃节奏
     }
     // TIM16: 自动亮度调节(根据光敏电阻ADC值)
     else if (htim->Instance == LIGHT_CONTROL_TIMER)

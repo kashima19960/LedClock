@@ -44,8 +44,8 @@ int main(void)
         time.seconds = 0;
         set_time(&time);
 
-        resetSettings();
-        saveSettings();
+        reset_settings();
+        save_settings();
     }
     else // 正常关机，读取设置
     {
@@ -66,8 +66,8 @@ int main(void)
         savedBrightness > 8 || strongBrightness > 8 || strongBrightness == 0 || weakBrightness > 8 ||
         weakBrightness == 0)
     {
-        resetSettings();
-        saveSettings();
+        reset_settings();
+        save_settings();
     }
 
     tm1637_init();

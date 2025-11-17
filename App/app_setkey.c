@@ -12,7 +12,7 @@ void set_key_clicked(void)
 {
     if (isAlarming)
     {
-        alarmStop();
+        alarm_stop();
         return;
     }
 

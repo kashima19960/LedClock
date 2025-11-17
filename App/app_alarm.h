@@ -3,10 +3,10 @@
 
 #include "app_config.h"
 
-void checkRingOnTime(void);
-void alarmStart(void);
-void alarmTimerTick();
-void alarmStop(void);
-void checkAlarm(void);
+void check_ring_on_time(void);
+void alarm_start(void);
+void alarm_timer_tick();
+void alarm_stop(void);
+void check_alarm(void);
 
 #endif

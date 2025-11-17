@@ -4,7 +4,7 @@
 /*
 蜂鸣器低电平响，高电平静音
 */
-void checkRingOnTime()
+void check_ring_on_time()
 {
     // 启用整点报时
     if (isRingOnTimeEnabled
@@ -39,14 +39,14 @@ void checkRingOnTime()
     }
 }
 
-void alarmStart()
+void alarm_start()
 {
     isAlarming = true;
     isAlarmed = true;
     HAL_TIM_Base_Start_IT(&ALARM_CONTROL_TIMER_HANDLE);
 }
 
-void alarmTimerTick()
+void alarm_timer_tick()
 {
     uint16_t onTime = 50, offTime = 50, restTime = 500; // 单位:ms
     uint8_t ringCounts = 4;                             // 每轮响铃次数
@@ -83,19 +83,19 @@ void alarmTimerTick()
     }
 }
 
-void alarmStop()
+void alarm_stop()
 {
     isAlarming = false;
     HAL_TIM_Base_Stop_IT(&ALARM_CONTROL_TIMER_HANDLE);
     HAL_GPIO_WritePin(BUZZER_GPIO_PORT, BUZZER_PIN, SET);
 }
 
-void checkAlarm()
+void check_alarm()
 {
     // 时间匹配且闹钟启用,启动响铃
     if (alarmHour == time.hours && alarmMin == time.minutes && isAlarmed == false && isAlarmEnabled)
     {
-        alarmStart();
+        alarm_start();
     }
 
     // 时间不匹配,重置已响铃标志
@@ -103,7 +103,7 @@ void checkAlarm()
     {
         if (isAlarming)
         {
-            alarmStop();
+            alarm_stop();
         }
         isAlarmed = false;
     }
