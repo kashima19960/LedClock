@@ -7,18 +7,18 @@
 
 extern const uint16_t tempertureMap[TEMP_MAP_SIZE];
 
-extern DisplayMode currentMode;
-extern bool isInitCompleted;
+extern DisplayMode current_mode;
+extern bool is_init_completed;
 extern uint32_t lastDisplayChangeTime;
 
 extern uint32_t adcValue[2];
 
-extern uint8_t savedBrightness;
-extern bool isWeakBrightness;
-extern uint8_t strongBrightness, weakBrightness;
+extern uint8_t save_brightness;
+extern bool is_weak_brightness;
+extern uint8_t strong_brightness, weak_brightness;
 
 extern DateTime time, lastTime;
-extern uint8_t blinkControl;
+extern uint8_t blink_control;
 
 extern bool isAlarmEnabled;
 extern bool isAlarmed, isAlarming;

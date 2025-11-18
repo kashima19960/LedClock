@@ -48,19 +48,19 @@ void refresh_time_display()
 {
     time_now(&time);  // 从SD3077 RTC读取当前时间
     lastTime = time;
-    if (currentMode == MODE_SHOW_TIME)
+    if (current_mode == MODE_SHOW_TIME)
     {
         uint16_t number = time.hours * 100 + time.minutes;
-        tm1637_show_number_right(3, number, blinkControl ? 2 : 0xFF, 1);
+        tm1637_show_number_right(3, number, blink_control ? 2 : 0xFF, 1);
     }
-    else if (currentMode == MODE_SHOW_SECOND)
+    else if (current_mode == MODE_SHOW_SECOND)
     {
         tm1637_set_char(0, ' ', false);
         tm1637_set_char(1, ' ', true);
         tm1637_set_char(2, time.seconds / 10 + '0', false);
         tm1637_set_char(3, time.seconds % 10 + '0', false);
     }
-    else if (currentMode == MODE_SHOW_TEMPERTURE)
+    else if (current_mode == MODE_SHOW_TEMPERTURE)
     {
         refresh_temperture();
         if (temperture > 99)
@@ -74,69 +74,69 @@ void refresh_time_display()
     }
 
     check_alarm(); // 检查是否需要触发闹钟
-    checkRingOnTime();// 检查整点报时
+    check_ring_on_time();// 检查整点报时
 }
 
 void refresh_settings_display()
 {
     char disp[5] = {0};  // 4位数码管显示缓冲
-    if (currentMode == MODE_SET_HOUR)
+    if (current_mode == MODE_SET_HOUR)
     {
-        disp[0] = blinkControl ? ' ' : (lastTime.hours / 10 + '0');
-        disp[1] = blinkControl ? ' ' : (lastTime.hours % 10 + '0');
+        disp[0] = blink_control ? ' ' : (lastTime.hours / 10 + '0');
+        disp[1] = blink_control ? ' ' : (lastTime.hours % 10 + '0');
         disp[2] = lastTime.minutes / 10 + '0';
         disp[3] = lastTime.minutes % 10 + '0';
     }
-    else if (currentMode == MODE_SET_MINUTE)
+    else if (current_mode == MODE_SET_MINUTE)
     {
         disp[0] = lastTime.hours / 10 + '0';
         disp[1] = lastTime.hours % 10 + '0';
-        disp[2] = blinkControl ? ' ' : lastTime.minutes / 10 + '0';
-        disp[3] = blinkControl ? ' ' : lastTime.minutes % 10 + '0';
+        disp[2] = blink_control ? ' ' : lastTime.minutes / 10 + '0';
+        disp[3] = blink_control ? ' ' : lastTime.minutes % 10 + '0';
     }
-    else if (currentMode == MODE_SET_ALARM_ENABLE)
+    else if (current_mode == MODE_SET_ALARM_ENABLE)
     {
         disp[0] = 'A';
         disp[1] = 'L';
-        disp[2] = blinkControl ? ' ' : 'o';
-        disp[3] = blinkControl ? ' ' : isAlarmEnabled ? 'n' : 'F';
+        disp[2] = blink_control ? ' ' : 'o';
+        disp[3] = blink_control ? ' ' : isAlarmEnabled ? 'n' : 'F';
     }
-    else if (currentMode == MODE_SET_ALARM_HOUR)
+    else if (current_mode == MODE_SET_ALARM_HOUR)
     {
-        disp[0] = blinkControl ? ' ' : (alarmHour / 10 + '0');
-        disp[1] = blinkControl ? ' ' : (alarmHour % 10 + '0');
+        disp[0] = blink_control ? ' ' : (alarmHour / 10 + '0');
+        disp[1] = blink_control ? ' ' : (alarmHour % 10 + '0');
         disp[2] = alarmMin / 10 + '0';
         disp[3] = alarmMin % 10 + '0';
     }
-    else if (currentMode == MODE_SET_ALARM_MINUTE)
+    else if (current_mode == MODE_SET_ALARM_MINUTE)
     {
         disp[0] = alarmHour / 10 + '0';
         disp[1] = alarmHour % 10 + '0';
-        disp[2] = blinkControl ? ' ' : alarmMin / 10 + '0';
-        disp[3] = blinkControl ? ' ' : alarmMin % 10 + '0';
+        disp[2] = blink_control ? ' ' : alarmMin / 10 + '0';
+        disp[3] = blink_control ? ' ' : alarmMin % 10 + '0';
     }
-    else if (currentMode == MODE_SET_TEMP_SHOW)
+    else if (current_mode == MODE_SET_TEMP_SHOW)
     {
         disp[0] = 'T';
         disp[1] = 'S';
-        disp[2] = blinkControl ? ' ' : tempertureShowTime / 10 + '0';
-        disp[3] = blinkControl ? ' ' : tempertureShowTime % 10 + '0';
+        disp[2] = blink_control ? ' ' : tempertureShowTime / 10 + '0';
+        disp[3] = blink_control ? ' ' : tempertureShowTime % 10 + '0';
     }
-    else if (currentMode == MODE_SET_TEMP_HIDE)
+    else if (current_mode == MODE_SET_TEMP_HIDE)
     {
         disp[0] = 'T';
         disp[1] = 'H';
-        disp[2] = blinkControl ? ' ' : tempertureHideTime / 10 + '0';
-        disp[3] = blinkControl ? ' ' : tempertureHideTime % 10 + '0';
+        disp[2] = blink_control ? ' ' : tempertureHideTime / 10 + '0';
+        disp[3] = blink_control ? ' ' : tempertureHideTime % 10 + '0';
     }
-    else if (currentMode == MODE_SET_BRIGHTNESS)
+    else if (current_mode == MODE_SET_BRIGHTNESS)
     {
         disp[0] = 'b';
         disp[1] = 'r';
-        if (savedBrightness)
+        if (save_brightness)
         {
-            disp[2] = blinkControl ? ' ' : '0';
-            disp[3] = blinkControl ? ' ' : savedBrightness + '0';
+            disp[2] = blink_control ? ' ' : '0';
+            disp[3] = blink_control ? ' ' : save_brightness + '0';
         }
         else
         {
@@ -144,40 +144,40 @@ void refresh_settings_display()
             disp[3] = 'U';
         }
     }
-    else if (currentMode == MODE_SET_BRIGHTNESS_STRONG)
+    else if (current_mode == MODE_SET_BRIGHTNESS_STRONG)
     {
         disp[0] = 'b';
         disp[1] = '1';
-        disp[2] = blinkControl ? ' ' : '0';
-        disp[3] = blinkControl ? ' ' : strongBrightness + '0';
+        disp[2] = blink_control ? ' ' : '0';
+        disp[3] = blink_control ? ' ' : strong_brightness + '0';
     }
-    else if (currentMode == MODE_SET_BRIGHTNESS_WEAK)
+    else if (current_mode == MODE_SET_BRIGHTNESS_WEAK)
     {
         disp[0] = 'b';
         disp[1] = '2';
-        disp[2] = blinkControl ? ' ' : '0';
-        disp[3] = blinkControl ? ' ' : weakBrightness + '0';
+        disp[2] = blink_control ? ' ' : '0';
+        disp[3] = blink_control ? ' ' : weak_brightness + '0';
     }
-    else if (currentMode == MODE_SET_ROT_ENABLE)
+    else if (current_mode == MODE_SET_ROT_ENABLE)
     {
         disp[0] = 'r';
         disp[1] = 'o';
-        disp[2] = blinkControl ? ' ' : 'o';
-        disp[3] = blinkControl ? ' ' : isRingOnTimeEnabled ? 'n' : 'F';
+        disp[2] = blink_control ? ' ' : 'o';
+        disp[3] = blink_control ? ' ' : isRingOnTimeEnabled ? 'n' : 'F';
     }
-    else if (currentMode == MODE_SET_ROT_START)
+    else if (current_mode == MODE_SET_ROT_START)
     {
         disp[0] = 'r';
         disp[1] = 'S';
-        disp[2] = blinkControl ? ' ' : ringOnTimeStart / 10 + '0';
-        disp[3] = blinkControl ? ' ' : ringOnTimeStart % 10 + '0';
+        disp[2] = blink_control ? ' ' : ringOnTimeStart / 10 + '0';
+        disp[3] = blink_control ? ' ' : ringOnTimeStart % 10 + '0';
     }
-    else if (currentMode == MODE_SET_ROT_STOP)
+    else if (current_mode == MODE_SET_ROT_STOP)
     {
         disp[0] = 'r';
         disp[1] = 'e';
-        disp[2] = blinkControl ? ' ' : ringOnTimeStop / 10 + '0';
-        disp[3] = blinkControl ? ' ' : ringOnTimeStop % 10 + '0';
+        disp[2] = blink_control ? ' ' : ringOnTimeStop / 10 + '0';
+        disp[3] = blink_control ? ' ' : ringOnTimeStop % 10 + '0';
     }
 
     tm1637_set_char(0, disp[0], false);

@@ -7,19 +7,19 @@
 void exti_interrupt_handler(uint16_t gpio_pin)
 {
     /* 秒中断处理 */
-    if (gpio_pin == SEC_INT_PIN && isInitCompleted)
+    if (gpio_pin == SEC_INT_PIN && is_init_completed)
     {
-        if (currentMode == MODE_SHOW_TIME || currentMode == MODE_SHOW_SECOND || currentMode == MODE_SHOW_TEMPERTURE)
+        if (current_mode == MODE_SHOW_TIME || current_mode == MODE_SHOW_SECOND || current_mode == MODE_SHOW_TEMPERTURE)
         {
             refresh_time_display();
         }
-        else if (currentMode >= MODE_SET_HOUR && currentMode <= MODE_SET_ROT_STOP)
+        else if (current_mode >= MODE_SET_HOUR && current_mode <= MODE_SET_ROT_STOP)
         {
             // 这个函数用来控制字符的闪烁的显示，不起到实际更改设置的作用
             refresh_settings_display();
         }
 
-        blinkControl = ~blinkControl;
+        blink_control = ~blink_control;
     }
     /* MODE键中断处理 */
     else if (gpio_pin == MODE_KEY_PIN)
@@ -56,26 +56,26 @@ void tim_interrupt_handler(TIM_HandleTypeDef *htim)
     // TIM16: 自动亮度调节(根据光敏电阻ADC值)
     else if (htim->Instance == LIGHT_CONTROL_TIMER)
     {
-        if (savedBrightness == 0) // 自动亮度模式
+        if (save_brightness == 0) // 自动亮度模式
         {
             /* 环境光线变强 -> 提高亮度 */
-            if (isWeakBrightness && adcValue[0] > STRONG_BRIGHTNESS_ADC_VALUE)
+            if (is_weak_brightness && adcValue[0] > STRONG_BRIGHTNESS_ADC_VALUE)
             {
-                isWeakBrightness = false;
+                is_weak_brightness = false;
                 
-                if (strongBrightness > 0)
+                if (strong_brightness > 0)
                 {
-                    tm1637_set_brightness(strongBrightness);
+                    tm1637_set_brightness(strong_brightness);
                 }
             }
             /* 环境光线变弱 -> 降低亮度 */
-            else if (!isWeakBrightness && adcValue[0] < WEAK_BRIGHTNESS_ADC_VALUE)
+            else if (!is_weak_brightness && adcValue[0] < WEAK_BRIGHTNESS_ADC_VALUE)
             {
-                isWeakBrightness = true;
+                is_weak_brightness = true;
                 
-                if (weakBrightness > 0)
+                if (weak_brightness > 0)
                 {
-                    tm1637_set_brightness(weakBrightness);
+                    tm1637_set_brightness(weak_brightness);
                 }
             }
         }

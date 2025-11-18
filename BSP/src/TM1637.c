@@ -70,8 +70,7 @@ static void tm1637_ack(void)
 {
     TM1637_CLK(0);
     delay(5);
-    while (TM1637_READ_DIO)
-        ;
+    while (TM1637_READ_DIO);
     TM1637_CLK(1);
     delay(2);
     TM1637_CLK(0);
@@ -167,7 +166,7 @@ void tm1637_set_brightness(uint8_t brightness)
     tm1637_stop();
 }
 
-// tm1637_show_number_right(3, number, blinkControl ? 2 : 0xFF, 1);
+// tm1637_show_number_right(3, number, blink_control ? 2 : 0xFF, 1);
 void tm1637_show_number_right(uint8_t index, uint32_t num, uint8_t pointLocation, uint8_t isPaddingZero)
 {
 

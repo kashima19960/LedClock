@@ -10,18 +10,18 @@ const uint16_t tempertureMap[] = {
     3790, 3797, 3803, 3809, 3815, 3821, 3827, 3833, 3839, 3844, 3849, 3854, 3859, 3864, 3869, 3874, 3878, 3883,
 };
 
-DisplayMode currentMode = MODE_SHOW_TIME;
-bool isInitCompleted = false;
+DisplayMode current_mode = MODE_SHOW_TIME;
+bool is_init_completed = false;
 uint32_t lastDisplayChangeTime;
 
-uint32_t adcValue[2];
+uint32_t adcValue[2]; // [0] - light, [1] - ntc
 
-uint8_t savedBrightness = 0;
-bool isWeakBrightness = true;
-uint8_t strongBrightness, weakBrightness;
+uint8_t save_brightness = 0;
+bool is_weak_brightness = true;
+uint8_t strong_brightness, weak_brightness;
 
 DateTime time, lastTime;
-uint8_t blinkControl;
+uint8_t blink_control;
 
 bool isAlarmEnabled = false;
 bool isAlarmed = false, isAlarming = false;

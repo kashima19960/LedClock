@@ -2,73 +2,69 @@
 #define __APP_CONFIG_H
 
 #include "stm32f0xx_hal.h"
+#define KEY_LONG_PRESS_EFFECT_TIME       800
+#define KEY_REPEAT_TIME_INTERVAL         250
+#define KEY_CLICK_EFFECT_TIME            50
+#define YEAR_MAX_SET                     38
+#define YEAR_MIN_SET                     15
+#define TEMPERTURE_MAX_SHOW_TIME         15
+#define TEMPERTURE_MAX_HIDE_TIME         30
+#define RING_ON_TIME_LONG                1000
+#define STRONG_BRIGHTNESS_ADC_VALUE      2800
+#define WEAK_BRIGHTNESS_ADC_VALUE        2300
+#define STRONG_BRIGHTNESS_VALUE          8
+#define WEAK_BRIGHTNESS_VALUE            1
 
-//#define USE_HAL_DRIVER
-//#define STM32F030x6
+#define ALARM_CONTROL_TIMER_HANDLE       g_tim17_handle
+#define ALARM_CONTROL_TIMER              TIM17
+#define LIGHT_CONTROL_TIMER_HANDLE       g_tim16_handle
+#define LIGHT_CONTROL_TIMER              TIM16
+#define TEMPERTURE_ADC_HANDLE            g_adc_handle
 
-#define KEY_LONG_PRESS_EFFECT_TIME 800
-#define KEY_REPEAT_TIME_INTERVAL 250
-#define KEY_CLICK_EFFECT_TIME 50
-#define YEAR_MAX_SET 38
-#define YEAR_MIN_SET 15
-#define TEMPERTURE_MAX_SHOW_TIME 15
-#define TEMPERTURE_MAX_HIDE_TIME 30
-#define RING_ON_TIME_LONG 1000
-#define STRONG_BRIGHTNESS_ADC_VALUE 2800
-#define WEAK_BRIGHTNESS_ADC_VALUE 2300
-#define STRONG_BRIGHTNESS_VALUE 8
-#define WEAK_BRIGHTNESS_VALUE 1
+#define BAK_DATA_SIZE                    13
+#define BAK_POWER_DOWN_IND_INDEX         0x00
+#define BAK_ALARM_ENABLED_INDEX          0x02
+#define BAK_ALARM_HOUR_INDEX             0x03
+#define BAK_ALARM_MINUTE_INDEX           0x04
+#define BAK_TEMP_SHOW_TIME_INDEX         0x05
+#define BAK_TEMP_HIDE_TIME_INDEX         0x06
+#define BAK_ROT_ENABLED_INDEX            0x07
+#define BAK_ROT_START_INDEX              0x08
+#define BAK_ROT_STOP_INDEX               0x09
+#define BAK_BRIGHTNESS_INDEX             0x0A
+#define BAK_BRIGHTNESS_STRONG_INDEX      0x0B
+#define BAK_BRIGHTNESS_WEAK_INDEX        0x0C
 
-#define ALARM_CONTROL_TIMER_HANDLE g_tim17_handle
-#define ALARM_CONTROL_TIMER TIM17
-#define LIGHT_CONTROL_TIMER_HANDLE g_tim16_handle
-#define LIGHT_CONTROL_TIMER TIM16
-#define TEMPERTURE_ADC_HANDLE g_adc_handle
+#define POWER_DOWN_IND_DATA              0xFA
 
-#define BAK_DATA_SIZE 13
-#define BAK_POWER_DOWN_IND_INDEX 0x00
-#define BAK_ALARM_ENABLED_INDEX 0x02
-#define BAK_ALARM_HOUR_INDEX 0x03
-#define BAK_ALARM_MINUTE_INDEX 0x04
-#define BAK_TEMP_SHOW_TIME_INDEX 0x05
-#define BAK_TEMP_HIDE_TIME_INDEX 0x06
-#define BAK_ROT_ENABLED_INDEX 0x07
-#define BAK_ROT_START_INDEX 0x08
-#define BAK_ROT_STOP_INDEX 0x09
-#define BAK_BRIGHTNESS_INDEX 0x0A
-#define BAK_BRIGHTNESS_STRONG_INDEX 0x0B
-#define BAK_BRIGHTNESS_WEAK_INDEX 0x0C
+#define TEMP_BUFFER_SIZE                 8
+#define TEMP_MAP_SIZE                    126
 
-#define POWER_DOWN_IND_DATA 0xFA
+#define TM1637_CLK_PIN                   GPIO_PIN_0
+#define TM1637_CLK_GPIO_PORT             GPIOF
+#define TM1637_DIO_PIN                   GPIO_PIN_1
+#define TM1637_DIO_GPIO_PORT             GPIOF
 
-#define TEMP_BUFFER_SIZE 8
-#define TEMP_MAP_SIZE 126
+#define LIGHT_PIN                        GPIO_PIN_0
+#define LIGHT_GPIO_PORT                  GPIOA
 
-#define TM1637_CLK_PIN GPIO_PIN_0
-#define TM1637_CLK_GPIO_PORT GPIOF
-#define TM1637_DIO_PIN GPIO_PIN_1
-#define TM1637_DIO_GPIO_PORT GPIOF
+#define NTC_PIN                          GPIO_PIN_1
+#define NTC_GPIO_PORT                    GPIOA
 
-#define LIGHT_PIN GPIO_PIN_0
-#define LIGHT_GPIO_PORT GPIOA
+#define MODE_KEY_PIN                     GPIO_PIN_2
+#define MODE_KEY_GPIO_PORT               GPIOA
+#define MODE_KEY_EXTI_IRQn               EXTI2_3_IRQn
 
-#define NTC_PIN GPIO_PIN_1
-#define NTC_GPIO_PORT GPIOA
+#define SET_KEY_PIN                      GPIO_PIN_3
+#define SET_KEY_GPIO_PORT                GPIOA
+#define SET_KEY_EXTI_IRQn                EXTI2_3_IRQn
 
-#define MODE_KEY_PIN GPIO_PIN_2
-#define MODE_KEY_GPIO_PORT GPIOA
-#define MODE_KEY_EXTI_IRQn EXTI2_3_IRQn
+#define BUZZER_PIN                       GPIO_PIN_6
+#define BUZZER_GPIO_PORT                 GPIOA
 
-#define SET_KEY_PIN GPIO_PIN_3
-#define SET_KEY_GPIO_PORT GPIOA
-#define SET_KEY_EXTI_IRQn EXTI2_3_IRQn
-
-#define BUZZER_PIN GPIO_PIN_6
-#define BUZZER_GPIO_PORT GPIOA
-
-#define SEC_INT_PIN GPIO_PIN_1
-#define SEC_INT_GPIO_PORT GPIOB
-#define SEC_INT_EXTI_IRQn EXTI0_1_IRQn
+#define SEC_INT_PIN                      GPIO_PIN_1
+#define SEC_INT_GPIO_PORT                GPIOB
+#define SEC_INT_EXTI_IRQn                EXTI0_1_IRQn
 
 typedef enum
 {

@@ -57,28 +57,28 @@ int main(void)
         isRingOnTimeEnabled = backupData[BAK_ROT_ENABLED_INDEX];
         ringOnTimeStart = backupData[BAK_ROT_START_INDEX];
         ringOnTimeStop = backupData[BAK_ROT_STOP_INDEX];
-        savedBrightness = backupData[BAK_BRIGHTNESS_INDEX];
-        strongBrightness = backupData[BAK_BRIGHTNESS_STRONG_INDEX];
-        weakBrightness = backupData[BAK_BRIGHTNESS_WEAK_INDEX];
+        save_brightness = backupData[BAK_BRIGHTNESS_INDEX];
+        strong_brightness = backupData[BAK_BRIGHTNESS_STRONG_INDEX];
+        weak_brightness = backupData[BAK_BRIGHTNESS_WEAK_INDEX];
     }
 
     if (alarmHour > (uint8_t)23 || alarmMin > (uint8_t)59 || ringOnTimeStart > 23 || ringOnTimeStop > 23 ||
-        savedBrightness > 8 || strongBrightness > 8 || strongBrightness == 0 || weakBrightness > 8 ||
-        weakBrightness == 0)
+        save_brightness > 8 || strong_brightness > 8 || strong_brightness == 0 || weak_brightness > 8 ||
+        weak_brightness == 0)
     {
         reset_settings();
         save_settings();
     }
 
     tm1637_init();
-    if (savedBrightness != 0)
+    if (save_brightness != 0)
     {
-        tm1637_set_brightness(savedBrightness);
+        tm1637_set_brightness(save_brightness);
     }
     else
     {
         tm1637_set_brightness(STRONG_BRIGHTNESS_VALUE);
-        isWeakBrightness = false;
+        is_weak_brightness = false;
     }
 
     HAL_ADCEx_Calibration_Start(&g_adc_handle);
@@ -94,7 +94,7 @@ int main(void)
 
     lastDisplayChangeTime = HAL_GetTick();
 
-    isInitCompleted = true;
+    is_init_completed = true;
 
     uint32_t now = 0, passedTime;
     // 蜂鸣器高电平关闭，低电平响铃
@@ -112,35 +112,35 @@ int main(void)
 
         if (tempertureShowTime > 0)
         {
-            if (currentMode == MODE_SHOW_TIME)
+            if (current_mode == MODE_SHOW_TIME)
             {
                 now = HAL_GetTick();
                 passedTime = now - lastDisplayChangeTime;
                 if (now < lastDisplayChangeTime || passedTime >= (tempertureHideTime * 1000))
                 {
-                    currentMode = MODE_SHOW_TEMPERTURE;
+                    current_mode = MODE_SHOW_TEMPERTURE;
                     lastDisplayChangeTime = now;
                 }
             }
-            else if (currentMode == MODE_SHOW_TEMPERTURE && tempertureHideTime > 0)
+            else if (current_mode == MODE_SHOW_TEMPERTURE && tempertureHideTime > 0)
             {
                 now = HAL_GetTick();
                 passedTime = now - lastDisplayChangeTime;
                 if (now < lastDisplayChangeTime || passedTime >= (tempertureShowTime * 1000))
                 {
-                    currentMode = MODE_SHOW_TIME;
+                    current_mode = MODE_SHOW_TIME;
                     lastDisplayChangeTime = now;
                 }
             }
         }
-        else if (currentMode == MODE_SHOW_TEMPERTURE)
+        else if (current_mode == MODE_SHOW_TEMPERTURE)
         {
-            currentMode = MODE_SHOW_TIME;
+            current_mode = MODE_SHOW_TIME;
             lastDisplayChangeTime = now;
         }
 
-        if (HAL_GPIO_ReadPin(SET_KEY_GPIO_PORT, SET_KEY_PIN) == GPIO_PIN_RESET && currentMode >= MODE_SET_HOUR &&
-            currentMode <= MODE_SET_ROT_STOP)
+        if (HAL_GPIO_ReadPin(SET_KEY_GPIO_PORT, SET_KEY_PIN) == GPIO_PIN_RESET && current_mode >= MODE_SET_HOUR &&
+            current_mode <= MODE_SET_ROT_STOP)
         {
             uint32_t curVal = HAL_GetTick();
             uint32_t timePassed = curVal - lastSetKeyPressTime;
@@ -155,7 +155,19 @@ int main(void)
         }
     }
 }
-
+/**
+ * @brief  系统时钟配置
+ * System Clock source  = PLL (HSI)
+ * SYSCLK(Hz)           = 16,000,000 (16 MHz)
+ * HCLK(Hz)             = 16,000,000 (16 MHz)
+ * AHB Prescaler        = 1
+ * APB1 Prescaler       = 1
+ * HSI Frequency(Hz)    = 8,000,000
+ * PLLMUL               = 4 (HSI/2 * 4)
+ * I2C1 Clock           = HSI (8 MHz)
+ * HSI14                = ON (14 MHz)
+ * ADC Clock            = HSI14
+ */
 void SystemClock_Config(void)
 {
     RCC_OscInitTypeDef RCC_OscInitStruct = {0};

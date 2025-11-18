@@ -33,7 +33,7 @@ void sd3077_iic_init(void)
 void sec_int_gpio_init(void)
 {
     GPIO_InitTypeDef gpio_init_struct = {0};
-    //SD3077_SEC_INT_GPIO_CLK_ENABLE();
+    SD3077_SEC_INT_GPIO_CLK_ENABLE();
     gpio_init_struct.Pin = SEC_INT_PIN;
     gpio_init_struct.Mode = GPIO_MODE_IT_FALLING;
     gpio_init_struct.Pull = GPIO_PULLUP;
@@ -232,8 +232,7 @@ void write_backup_data(uint8_t index, uint8_t *data, uint8_t size)
     unlock_write_protect();
 
     // 写入备份寄存器
-    HAL_I2C_Mem_Write(&SD3077_IIC_HANDLE, SD3077_IIC_ADDR_WRITE, SD3077_REG_SRAM_START + index, 1, data, size,
-                      HAL_MAX_DELAY);
+    HAL_I2C_Mem_Write(&SD3077_IIC_HANDLE, SD3077_IIC_ADDR_WRITE, SD3077_REG_SRAM_START + index, 1, data, size,HAL_MAX_DELAY);
     lock_write_protect();
 }
 
@@ -245,6 +244,5 @@ void read_backup_data(uint8_t index, uint8_t *data, uint8_t size)
     }
 
     // 从备份寄存器读出
-    HAL_I2C_Mem_Read(&SD3077_IIC_HANDLE, SD3077_IIC_ADDR_READ, SD3077_REG_SRAM_START + index, 1, data, size,
-                     HAL_MAX_DELAY);
+    HAL_I2C_Mem_Read(&SD3077_IIC_HANDLE, SD3077_IIC_ADDR_READ, SD3077_REG_SRAM_START + index, 1, data, size,HAL_MAX_DELAY);
 }

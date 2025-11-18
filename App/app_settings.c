@@ -25,33 +25,33 @@ void read_backup_settings()
 void save_settings()
 {
     uint8_t backupData[BAK_DATA_SIZE];
-    backupData[BAK_POWER_DOWN_IND_INDEX] = POWER_DOWN_IND_DATA;
-    backupData[BAK_POWER_DOWN_IND_INDEX + 1] = POWER_DOWN_IND_DATA;
-    backupData[BAK_ALARM_ENABLED_INDEX] = isAlarmEnabled;
-    backupData[BAK_ALARM_HOUR_INDEX] = alarmHour;
-    backupData[BAK_ALARM_MINUTE_INDEX] = alarmMin;
-    backupData[BAK_TEMP_SHOW_TIME_INDEX] = tempertureShowTime;
-    backupData[BAK_TEMP_HIDE_TIME_INDEX] = tempertureHideTime;
-    backupData[BAK_ROT_ENABLED_INDEX] = isRingOnTimeEnabled;
-    backupData[BAK_ROT_START_INDEX] = ringOnTimeStart;
-    backupData[BAK_ROT_STOP_INDEX] = ringOnTimeStop;
-    backupData[BAK_BRIGHTNESS_INDEX] = savedBrightness;
-    backupData[BAK_BRIGHTNESS_STRONG_INDEX] = strongBrightness;
-    backupData[BAK_BRIGHTNESS_WEAK_INDEX] = weakBrightness;
+    backupData[BAK_POWER_DOWN_IND_INDEX]       = POWER_DOWN_IND_DATA;
+    backupData[BAK_POWER_DOWN_IND_INDEX + 1]   = POWER_DOWN_IND_DATA;
+    backupData[BAK_ALARM_ENABLED_INDEX]        = isAlarmEnabled;
+    backupData[BAK_ALARM_HOUR_INDEX]           = alarmHour;
+    backupData[BAK_ALARM_MINUTE_INDEX]         = alarmMin;
+    backupData[BAK_TEMP_SHOW_TIME_INDEX]       = tempertureShowTime;
+    backupData[BAK_TEMP_HIDE_TIME_INDEX]       = tempertureHideTime;
+    backupData[BAK_ROT_ENABLED_INDEX]          = isRingOnTimeEnabled;
+    backupData[BAK_ROT_START_INDEX]            = ringOnTimeStart;
+    backupData[BAK_ROT_STOP_INDEX]             = ringOnTimeStop;
+    backupData[BAK_BRIGHTNESS_INDEX]           = save_brightness;
+    backupData[BAK_BRIGHTNESS_STRONG_INDEX]    = strong_brightness;
+    backupData[BAK_BRIGHTNESS_WEAK_INDEX]      = weak_brightness;
     write_backup_data(BAK_POWER_DOWN_IND_INDEX, backupData, BAK_DATA_SIZE);
 }
 
 void reset_settings()
 {
-    isAlarmEnabled = false;
-    alarmHour = 0;
-    alarmMin = 0;
-    tempertureShowTime = 2;
-    tempertureHideTime = 10;
-    isRingOnTimeEnabled = false;
-    ringOnTimeStart = 8;
-    ringOnTimeStop = 20;
-    savedBrightness = 8;
-    strongBrightness = 8;
-    weakBrightness = 1;
+    isAlarmEnabled        = false;
+    alarmHour             = 0;
+    alarmMin              = 0;
+    tempertureShowTime    = 2;
+    tempertureHideTime    = 10;
+    isRingOnTimeEnabled   = false;
+    ringOnTimeStart       = 8;
+    ringOnTimeStop        = 20;
+    save_brightness       = 8;
+    strong_brightness      = 8;
+    weak_brightness       = 1;
 }
