@@ -1,7 +1,6 @@
 #include "adc.h"
 
 ADC_HandleTypeDef g_adc_handle;
-
 DMA_HandleTypeDef g_dma_adc_handle;
 void adc_init(void)
 {
@@ -83,9 +82,7 @@ void HAL_ADC_MspDeInit(ADC_HandleTypeDef* adcHandle)
     if(adcHandle->Instance==ADC1)
     {
         __HAL_RCC_ADC1_CLK_DISABLE();
-
         HAL_GPIO_DeInit(GPIOA, LIGHT_PIN|NTC_PIN);
-
         HAL_DMA_DeInit(adcHandle->DMA_Handle);
     }
 }

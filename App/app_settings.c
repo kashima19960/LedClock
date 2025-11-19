@@ -7,50 +7,50 @@ void read_backup_settings()
     uint8_t data[3];
     read_backup_data(0, data, 3);
 
-    alarmHour = data[0];
-    alarmMin = data[1];
-    isAlarmEnabled = data[2];
+    alarm_hour = data[0];
+    alarm_min = data[1];
+    is_alarm_enabled = data[2];
 
     // 检查闹铃设置是否合规
-    if (alarmHour > 23)
+    if (alarm_hour > 23)
     {
-        alarmHour = 0;
+        alarm_hour = 0;
     }
-    if (alarmMin > 59)
+    if (alarm_min > 59)
     {
-        alarmMin = 0;
+        alarm_min = 0;
     }
 }
 
 void save_settings()
 {
-    uint8_t backupData[BAK_DATA_SIZE];
-    backupData[BAK_POWER_DOWN_IND_INDEX]       = POWER_DOWN_IND_DATA;
-    backupData[BAK_POWER_DOWN_IND_INDEX + 1]   = POWER_DOWN_IND_DATA;
-    backupData[BAK_ALARM_ENABLED_INDEX]        = isAlarmEnabled;
-    backupData[BAK_ALARM_HOUR_INDEX]           = alarmHour;
-    backupData[BAK_ALARM_MINUTE_INDEX]         = alarmMin;
-    backupData[BAK_TEMP_SHOW_TIME_INDEX]       = tempertureShowTime;
-    backupData[BAK_TEMP_HIDE_TIME_INDEX]       = tempertureHideTime;
-    backupData[BAK_ROT_ENABLED_INDEX]          = isRingOnTimeEnabled;
-    backupData[BAK_ROT_START_INDEX]            = ringOnTimeStart;
-    backupData[BAK_ROT_STOP_INDEX]             = ringOnTimeStop;
-    backupData[BAK_BRIGHTNESS_INDEX]           = save_brightness;
-    backupData[BAK_BRIGHTNESS_STRONG_INDEX]    = strong_brightness;
-    backupData[BAK_BRIGHTNESS_WEAK_INDEX]      = weak_brightness;
-    write_backup_data(BAK_POWER_DOWN_IND_INDEX, backupData, BAK_DATA_SIZE);
+    uint8_t backup_data[BAK_DATA_SIZE];
+    backup_data[BAK_POWER_DOWN_IND_INDEX]       = POWER_DOWN_IND_DATA;
+    backup_data[BAK_POWER_DOWN_IND_INDEX + 1]   = POWER_DOWN_IND_DATA;
+    backup_data[BAK_ALARM_ENABLED_INDEX]        = is_alarm_enabled;
+    backup_data[BAK_ALARM_HOUR_INDEX]           = alarm_hour;
+    backup_data[BAK_ALARM_MINUTE_INDEX]         = alarm_min;
+    backup_data[BAK_TEMP_SHOW_TIME_INDEX]       = temperature_show_time;
+    backup_data[BAK_TEMP_HIDE_TIME_INDEX]       = temperature_hide_time;
+    backup_data[BAK_ROT_ENABLED_INDEX]          = is_ring_on_time_enabled;
+    backup_data[BAK_ROT_START_INDEX]            = ring_on_time_start;
+    backup_data[BAK_ROT_STOP_INDEX]             = ring_on_time_stop;
+    backup_data[BAK_BRIGHTNESS_INDEX]           = save_brightness;
+    backup_data[BAK_BRIGHTNESS_STRONG_INDEX]    = strong_brightness;
+    backup_data[BAK_BRIGHTNESS_WEAK_INDEX]      = weak_brightness;
+    write_backup_data(BAK_POWER_DOWN_IND_INDEX, backup_data, BAK_DATA_SIZE);
 }
 
 void reset_settings()
 {
-    isAlarmEnabled        = false;
-    alarmHour             = 0;
-    alarmMin              = 0;
-    tempertureShowTime    = 2;
-    tempertureHideTime    = 10;
-    isRingOnTimeEnabled   = false;
-    ringOnTimeStart       = 8;
-    ringOnTimeStop        = 20;
+    is_alarm_enabled        = false;
+    alarm_hour             = 0;
+    alarm_min              = 0;
+    temperature_show_time    = 2;
+    temperature_hide_time    = 10;
+    is_ring_on_time_enabled   = false;
+    ring_on_time_start       = 8;
+    ring_on_time_stop        = 20;
     save_brightness       = 8;
     strong_brightness      = 8;
     weak_brightness       = 1;

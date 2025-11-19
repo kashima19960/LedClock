@@ -1,6 +1,6 @@
 #include "app_state.h"
 
-const uint16_t tempertureMap[] = {
+const uint16_t temperature_map[] = {
     1054, 1091, 1128, 1165, 1203, 1242, 1280, 1320, 1359, 1399, 1439, 1479, 1520, 1560, 1601, 1642, 1683, 1724,
     1765, 1805, 1846, 1887, 1927, 1968, 2008, 2048, 2087, 2126, 2165, 2204, 2242, 2280, 2318, 2355, 2391, 2427,
     2463, 2498, 2533, 2567, 2601, 2634, 2667, 2699, 2730, 2761, 2791, 2821, 2850, 2879, 2907, 2935, 2962, 2988,
@@ -12,31 +12,31 @@ const uint16_t tempertureMap[] = {
 
 DisplayMode current_mode = MODE_SHOW_TIME;
 bool is_init_completed = false;
-uint32_t lastDisplayChangeTime;
+uint32_t last_display_change_time;
 
-uint32_t adcValue[2]; // [0] - light, [1] - ntc
+uint32_t adc_value[2]; // [0] - light, [1] - ntc
 
 uint8_t save_brightness = 0;
 bool is_weak_brightness = true;
 uint8_t strong_brightness, weak_brightness;
 
-DateTime time, lastTime;
+DateTime time, last_time;
 uint8_t blink_control;
 
-bool isAlarmEnabled = false;
-bool isAlarmed = false, isAlarming = false;
-uint8_t alarmHour = 0, alarmMin = 0;
+bool is_alarm_enabled = false;
+bool is_alarmed = false, is_alarming = false;
+uint8_t alarm_hour = 0, alarm_min = 0;
+ 
+bool is_ring_on_time_enabled;
+uint8_t ring_on_time_start, ring_on_time_stop;
+uint8_t last_ring_on_time_hour;
+uint32_t ring_start_time;
 
-bool isRingOnTimeEnabled;
-uint8_t ringOnTimeStart, ringOnTimeStop;
-uint8_t lastRingOnTimeHour;
-uint32_t ringStartTime;
+uint32_t last_mode_key_press_time, last_set_key_press_time, last_set_key_press_report_time;
+uint32_t alarm_timestamp, alarm_beep_count;
+bool set_key_repeat_reported = false;
 
-uint32_t lastModeKeyPressTime, lastSetKeyPressTime, lastSetKeyPressReportTime;
-uint32_t alarmTimestamp, alarmBeepCount;
-bool setKeyRepeatReported = false;
-
-uint8_t temperture = 25;
-uint8_t tempertureShowTime, tempertureHideTime;
-uint8_t tempBuffered = 0;
-uint16_t tempBuffer[TEMP_BUFFER_SIZE + 1];
+uint8_t temperature = 25;
+uint8_t temperature_show_time, temperature_hide_time;
+uint8_t temp_buffered = 0;
+uint16_t temp_buffer[TEMP_BUFFER_SIZE + 1];

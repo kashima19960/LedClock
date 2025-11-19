@@ -9,45 +9,45 @@ void refresh_temperture()
     // 开启温度转换ADC
 
     uint32_t value;
-    uint32_t srcValue = adcValue[1];  // 读取ADC通道1(NTC)
+    uint32_t src_value = adc_value[1];  // 读取ADC通道1(NTC)
 
     // 滑动平均滤波: 缓冲区未满时直接使用原始值
-    if (tempBuffered < TEMP_BUFFER_SIZE)
+    if (temp_buffered < TEMP_BUFFER_SIZE)
     {
-        tempBuffer[tempBuffered++] = (uint16_t)srcValue;
-        value = srcValue;
+        temp_buffer[temp_buffered++] = (uint16_t)src_value;
+        value = src_value;
     }
     else
     {
         // 缓冲区已满,计算8次采样的平均值
-        tempBuffer[TEMP_BUFFER_SIZE] = (uint16_t)srcValue;
+        temp_buffer[TEMP_BUFFER_SIZE] = (uint16_t)src_value;
         value = 0;
         for (uint8_t i = 0; i < TEMP_BUFFER_SIZE; i++)
         {
-            tempBuffer[i] = tempBuffer[i + 1];  // 数据左移
-            value += tempBuffer[i];
+            temp_buffer[i] = temp_buffer[i + 1];  // 数据左移
+            value += temp_buffer[i];
         }
         value = value / TEMP_BUFFER_SIZE;
     }
 
-    // 查表法: ADC值转温度(tempertureMap数组存储了-20°C到105°C的ADC对应值)
+    // 查表法: ADC值转温度(temperature_map数组存储了-20°C到105°C的ADC对应值)
     for (uint8_t i = 0; i < TEMP_MAP_SIZE; i++)
     {
-        if (value <= tempertureMap[i])
+        if (value <= temperature_map[i])
         {
-            temperture = i;  // 温度 = 数组索引(°C)
+            temperature = i;  // 温度 = 数组索引(°C)
             return;
         }
     }
 
-    temperture = 0;  // 超出范围,返回0
+    temperature = 0;  // 超出范围,返回0
     return;
 }
 
 void refresh_time_display()
 {
     time_now(&time);  // 从SD3077 RTC读取当前时间
-    lastTime = time;
+    last_time = time;
     if (current_mode == MODE_SHOW_TIME)
     {
         uint16_t number = time.hours * 100 + time.minutes;
@@ -63,13 +63,13 @@ void refresh_time_display()
     else if (current_mode == MODE_SHOW_TEMPERTURE)
     {
         refresh_temperture();
-        if (temperture > 99)
+        if (temperature > 99)
         {
-            temperture = 99;
+            temperature = 99;
         }
         tm1637_set_char(0, ' ', false);
-        tm1637_set_char(1, temperture / 10 + '0', false);
-        tm1637_set_char(2, temperture % 10 + '0', false);
+        tm1637_set_char(1, temperature / 10 + '0', false);
+        tm1637_set_char(2, temperature % 10 + '0', false);
         tm1637_set_char(3, 'C', false);
     }
 
@@ -82,52 +82,52 @@ void refresh_settings_display()
     char disp[5] = {0};  // 4位数码管显示缓冲
     if (current_mode == MODE_SET_HOUR)
     {
-        disp[0] = blink_control ? ' ' : (lastTime.hours / 10 + '0');
-        disp[1] = blink_control ? ' ' : (lastTime.hours % 10 + '0');
-        disp[2] = lastTime.minutes / 10 + '0';
-        disp[3] = lastTime.minutes % 10 + '0';
+        disp[0] = blink_control ? ' ' : (last_time.hours / 10 + '0');
+        disp[1] = blink_control ? ' ' : (last_time.hours % 10 + '0');
+        disp[2] = last_time.minutes / 10 + '0';
+        disp[3] = last_time.minutes % 10 + '0';
     }
     else if (current_mode == MODE_SET_MINUTE)
     {
-        disp[0] = lastTime.hours / 10 + '0';
-        disp[1] = lastTime.hours % 10 + '0';
-        disp[2] = blink_control ? ' ' : lastTime.minutes / 10 + '0';
-        disp[3] = blink_control ? ' ' : lastTime.minutes % 10 + '0';
+        disp[0] = last_time.hours / 10 + '0';
+        disp[1] = last_time.hours % 10 + '0';
+        disp[2] = blink_control ? ' ' : last_time.minutes / 10 + '0';
+        disp[3] = blink_control ? ' ' : last_time.minutes % 10 + '0';
     }
     else if (current_mode == MODE_SET_ALARM_ENABLE)
     {
         disp[0] = 'A';
         disp[1] = 'L';
         disp[2] = blink_control ? ' ' : 'o';
-        disp[3] = blink_control ? ' ' : isAlarmEnabled ? 'n' : 'F';
+        disp[3] = blink_control ? ' ' : is_alarm_enabled ? 'n' : 'F';
     }
     else if (current_mode == MODE_SET_ALARM_HOUR)
     {
-        disp[0] = blink_control ? ' ' : (alarmHour / 10 + '0');
-        disp[1] = blink_control ? ' ' : (alarmHour % 10 + '0');
-        disp[2] = alarmMin / 10 + '0';
-        disp[3] = alarmMin % 10 + '0';
+        disp[0] = blink_control ? ' ' : (alarm_hour / 10 + '0');
+        disp[1] = blink_control ? ' ' : (alarm_hour % 10 + '0');
+        disp[2] = alarm_min / 10 + '0';
+        disp[3] = alarm_min % 10 + '0';
     }
     else if (current_mode == MODE_SET_ALARM_MINUTE)
     {
-        disp[0] = alarmHour / 10 + '0';
-        disp[1] = alarmHour % 10 + '0';
-        disp[2] = blink_control ? ' ' : alarmMin / 10 + '0';
-        disp[3] = blink_control ? ' ' : alarmMin % 10 + '0';
+        disp[0] = alarm_hour / 10 + '0';
+        disp[1] = alarm_hour % 10 + '0';
+        disp[2] = blink_control ? ' ' : alarm_min / 10 + '0';
+        disp[3] = blink_control ? ' ' : alarm_min % 10 + '0';
     }
     else if (current_mode == MODE_SET_TEMP_SHOW)
     {
         disp[0] = 'T';
         disp[1] = 'S';
-        disp[2] = blink_control ? ' ' : tempertureShowTime / 10 + '0';
-        disp[3] = blink_control ? ' ' : tempertureShowTime % 10 + '0';
+        disp[2] = blink_control ? ' ' : temperature_show_time / 10 + '0';
+        disp[3] = blink_control ? ' ' : temperature_show_time % 10 + '0';
     }
     else if (current_mode == MODE_SET_TEMP_HIDE)
     {
         disp[0] = 'T';
         disp[1] = 'H';
-        disp[2] = blink_control ? ' ' : tempertureHideTime / 10 + '0';
-        disp[3] = blink_control ? ' ' : tempertureHideTime % 10 + '0';
+        disp[2] = blink_control ? ' ' : temperature_hide_time / 10 + '0';
+        disp[3] = blink_control ? ' ' : temperature_hide_time % 10 + '0';
     }
     else if (current_mode == MODE_SET_BRIGHTNESS)
     {
@@ -163,21 +163,21 @@ void refresh_settings_display()
         disp[0] = 'r';
         disp[1] = 'o';
         disp[2] = blink_control ? ' ' : 'o';
-        disp[3] = blink_control ? ' ' : isRingOnTimeEnabled ? 'n' : 'F';
+        disp[3] = blink_control ? ' ' : is_ring_on_time_enabled ? 'n' : 'F';
     }
     else if (current_mode == MODE_SET_ROT_START)
     {
         disp[0] = 'r';
         disp[1] = 'S';
-        disp[2] = blink_control ? ' ' : ringOnTimeStart / 10 + '0';
-        disp[3] = blink_control ? ' ' : ringOnTimeStart % 10 + '0';
+        disp[2] = blink_control ? ' ' : ring_on_time_start / 10 + '0';
+        disp[3] = blink_control ? ' ' : ring_on_time_start % 10 + '0';
     }
     else if (current_mode == MODE_SET_ROT_STOP)
     {
         disp[0] = 'r';
         disp[1] = 'e';
-        disp[2] = blink_control ? ' ' : ringOnTimeStop / 10 + '0';
-        disp[3] = blink_control ? ' ' : ringOnTimeStop % 10 + '0';
+        disp[2] = blink_control ? ' ' : ring_on_time_stop / 10 + '0';
+        disp[3] = blink_control ? ' ' : ring_on_time_stop % 10 + '0';
     }
 
     tm1637_set_char(0, disp[0], false);

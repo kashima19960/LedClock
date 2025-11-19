@@ -13,7 +13,7 @@
 void mode_key_clicked(void)
 {
     /* 响铃时任意键停止 */
-    if (isAlarming)
+    if (is_alarming)
     {
         alarm_stop();
         return;
@@ -30,8 +30,8 @@ void mode_key_clicked(void)
     else if (current_mode == MODE_SHOW_SECOND)
     {
         /* 显示秒时按MODE键: 清零秒数 */
-        lastTime.seconds = 0;
-        set_time(&lastTime);
+        last_time.seconds = 0;
+        set_time(&last_time);
         refresh_time_display();
     }
     /* 设置模式: 逐级切换设置项 */
@@ -49,7 +49,7 @@ void mode_key_clicked(void)
     }
     else if (current_mode == MODE_SET_ALARM_ENABLE)
     {
-        current_mode = isAlarmEnabled ? MODE_SET_ALARM_HOUR : MODE_SET_TEMP_SHOW;
+        current_mode = is_alarm_enabled ? MODE_SET_ALARM_HOUR : MODE_SET_TEMP_SHOW;
         blink_control = 0xFF;
         refresh_settings_display();
     }
@@ -67,7 +67,7 @@ void mode_key_clicked(void)
     }
     else if (current_mode == MODE_SET_TEMP_SHOW)
     {
-        if (tempertureShowTime != 0)
+        if (temperature_show_time != 0)
         {
             current_mode = MODE_SET_TEMP_HIDE;
         }
@@ -118,19 +118,19 @@ void mode_key_clicked(void)
     {
         blink_control = 0x00;
 
-        if (!isRingOnTimeEnabled)//isRingOnTimeEnabled=false
+        if (!is_ring_on_time_enabled)//is_ring_on_time_enabled=false
         {
             current_mode = MODE_SHOW_TIME;
             time_now(&time);
-            lastTime.seconds = time.seconds;
-            set_time(&lastTime);
-            lastRingOnTimeHour = lastTime.hours;
+            last_time.seconds = time.seconds;
+            set_time(&last_time);
+            last_ring_on_time_hour = last_time.hours;
 
             save_settings();
 
             refresh_time_display();
             enable_second_interrupt_output();
-            lastDisplayChangeTime = HAL_GetTick();
+            last_display_change_time = HAL_GetTick();
         }
         else
         {
@@ -151,15 +151,15 @@ void mode_key_clicked(void)
 
         /* 将修改后的时间写入RTC */
         time_now(&time);
-        lastTime.seconds = time.seconds;
-        set_time(&lastTime);
-        lastRingOnTimeHour = lastTime.hours;
+        last_time.seconds = time.seconds;
+        set_time(&last_time);
+        last_ring_on_time_hour = last_time.hours;
 
         save_settings(); /* 保存所有设置到备份寄存器 */
 
         refresh_time_display();
         enable_second_interrupt_output(); /* 恢复1Hz秒中断 */
-        lastDisplayChangeTime = HAL_GetTick();
+        last_display_change_time = HAL_GetTick();
     }
 }
 
@@ -169,7 +169,7 @@ void mode_key_clicked(void)
  */
 void mode_key_long_pressed(void)
 {
-    if (isAlarming)
+    if (is_alarming)
     {
         alarm_stop();
         return;
@@ -179,7 +179,7 @@ void mode_key_long_pressed(void)
     {
         current_mode = MODE_SHOW_TIME; /* 放弃修改,直接退出 */
         refresh_time_display();
-        lastDisplayChangeTime = HAL_GetTick();
+        last_display_change_time = HAL_GetTick();
     }
 }
 
@@ -189,7 +189,7 @@ void mode_key_long_pressed(void)
  */
 void mode_key_pressed(void)
 {
-    lastModeKeyPressTime = HAL_GetTick();
+    last_mode_key_press_time = HAL_GetTick();
 }
 
 /**
@@ -202,15 +202,15 @@ void mode_key_released(void)
 
     current_val = HAL_GetTick();
 
-    if (lastModeKeyPressTime > current_val)
+    if (last_mode_key_press_time > current_val)
     {
         mode_key_clicked();
     }
-    else if (current_val - lastModeKeyPressTime > KEY_LONG_PRESS_EFFECT_TIME)
+    else if (current_val - last_mode_key_press_time > KEY_LONG_PRESS_EFFECT_TIME)
     {
         mode_key_long_pressed();
     }
-    else if (current_val - lastModeKeyPressTime > KEY_CLICK_EFFECT_TIME)
+    else if (current_val - last_mode_key_press_time > KEY_CLICK_EFFECT_TIME)
     {
         mode_key_clicked();
     }

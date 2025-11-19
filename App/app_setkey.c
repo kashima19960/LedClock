@@ -10,7 +10,7 @@
  */
 void set_key_clicked(void)
 {
-    if (isAlarming)
+    if (is_alarming)
     {
         alarm_stop();
         return;
@@ -26,16 +26,16 @@ void set_key_clicked(void)
     {
         current_mode = MODE_SHOW_TIME; /* 返回显示时间 */
         refresh_time_display();
-        lastDisplayChangeTime = HAL_GetTick();
+        last_display_change_time = HAL_GetTick();
     }
     /* 设置模式: 增加当前设置项的值 */
     else if (current_mode == MODE_SET_HOUR)
     {
-        lastTime.hours++;
+        last_time.hours++;
 
-        if (lastTime.hours > 23)
+        if (last_time.hours > 23)
         {
-            lastTime.hours = 0;
+            last_time.hours = 0;
         }
 
         blink_control = 0;
@@ -43,11 +43,11 @@ void set_key_clicked(void)
     }
     else if (current_mode == MODE_SET_MINUTE)
     {
-        lastTime.minutes++;
+        last_time.minutes++;
 
-        if (lastTime.minutes > 59)
+        if (last_time.minutes > 59)
         {
-            lastTime.minutes = 0;
+            last_time.minutes = 0;
         }
 
         blink_control = 0;
@@ -55,17 +55,17 @@ void set_key_clicked(void)
     }
     else if (current_mode == MODE_SET_ALARM_ENABLE)
     {
-        isAlarmEnabled = isAlarmEnabled ? false : true;
+        is_alarm_enabled = is_alarm_enabled ? false : true;
         blink_control = 0;
         refresh_settings_display();
     }
     else if (current_mode == MODE_SET_ALARM_HOUR)
     {
-        alarmHour++;
+        alarm_hour++;
 
-        if (alarmHour > 23)
+        if (alarm_hour > 23)
         {
-            alarmHour = 0;
+            alarm_hour = 0;
         }
 
         blink_control = 0;
@@ -73,11 +73,11 @@ void set_key_clicked(void)
     }
     else if (current_mode == MODE_SET_ALARM_MINUTE)
     {
-        alarmMin++;
+        alarm_min++;
 
-        if (alarmMin > 59)
+        if (alarm_min > 59)
         {
-            alarmMin = 0;
+            alarm_min = 0;
         }
 
         blink_control = 0;
@@ -85,11 +85,11 @@ void set_key_clicked(void)
     }
     else if (current_mode == MODE_SET_TEMP_SHOW)
     {
-        tempertureShowTime++;
+        temperature_show_time++;
 
-        if (tempertureShowTime > TEMPERTURE_MAX_SHOW_TIME)
+        if (temperature_show_time > TEMPERTURE_MAX_SHOW_TIME)
         {
-            tempertureShowTime = tempertureHideTime == 0 ? 1 : 0;
+            temperature_show_time = temperature_hide_time == 0 ? 1 : 0;
         }
 
         blink_control = 0;
@@ -97,11 +97,11 @@ void set_key_clicked(void)
     }
     else if (current_mode == MODE_SET_TEMP_HIDE)
     {
-        tempertureHideTime++;
+        temperature_hide_time++;
 
-        if (tempertureHideTime > TEMPERTURE_MAX_HIDE_TIME)
+        if (temperature_hide_time > TEMPERTURE_MAX_HIDE_TIME)
         {
-            tempertureHideTime = tempertureShowTime == 0 ? 1 : 0;
+            temperature_hide_time = temperature_show_time == 0 ? 1 : 0;
         }
 
         blink_control = 0;
@@ -148,17 +148,17 @@ void set_key_clicked(void)
     }
     else if (current_mode == MODE_SET_ROT_ENABLE)
     {
-        isRingOnTimeEnabled = isRingOnTimeEnabled ? false : true;
+        is_ring_on_time_enabled = is_ring_on_time_enabled ? false : true;
         blink_control = 0;
         refresh_settings_display();
     }
     else if (current_mode == MODE_SET_ROT_START)
     {
-        ringOnTimeStart++;
+        ring_on_time_start++;
 
-        if (ringOnTimeStart > 23)
+        if (ring_on_time_start > 23)
         {
-            ringOnTimeStart = 0;
+            ring_on_time_start = 0;
         }
 
         blink_control = 0;
@@ -166,11 +166,11 @@ void set_key_clicked(void)
     }
     else if (current_mode == MODE_SET_ROT_STOP)
     {
-        ringOnTimeStop++;
+        ring_on_time_stop++;
 
-        if (ringOnTimeStop > 23)
+        if (ring_on_time_stop > 23)
         {
-            ringOnTimeStop = 0;
+            ring_on_time_stop = 0;
         }
 
         blink_control = 0;
@@ -184,16 +184,16 @@ void set_key_clicked(void)
  */
 void set_key_presse_repeat_report(void)
 {
-    setKeyRepeatReported = true;
+    set_key_repeat_reported = true;
 
     /* 只对需要快速调整的模式生效 */
     if (current_mode == MODE_SET_HOUR)
     {
-        lastTime.hours++;
+        last_time.hours++;
 
-        if (lastTime.hours > 23)
+        if (last_time.hours > 23)
         {
-            lastTime.hours = 0;
+            last_time.hours = 0;
         }
 
         blink_control = 0;
@@ -201,11 +201,11 @@ void set_key_presse_repeat_report(void)
     }
     else if (current_mode == MODE_SET_MINUTE)
     {
-        lastTime.minutes++;
+        last_time.minutes++;
 
-        if (lastTime.minutes > 59)
+        if (last_time.minutes > 59)
         {
-            lastTime.minutes = 0;
+            last_time.minutes = 0;
         }
 
         blink_control = 0;
@@ -213,11 +213,11 @@ void set_key_presse_repeat_report(void)
     }
     else if (current_mode == MODE_SET_ALARM_HOUR)
     {
-        alarmHour++;
+        alarm_hour++;
 
-        if (alarmHour > 23)
+        if (alarm_hour > 23)
         {
-            alarmHour = 0;
+            alarm_hour = 0;
         }
 
         blink_control = 0;
@@ -225,11 +225,11 @@ void set_key_presse_repeat_report(void)
     }
     else if (current_mode == MODE_SET_ALARM_MINUTE)
     {
-        alarmMin++;
+        alarm_min++;
 
-        if (alarmMin > 59)
+        if (alarm_min > 59)
         {
-            alarmMin = 0;
+            alarm_min = 0;
         }
 
         blink_control = 0;
@@ -237,11 +237,11 @@ void set_key_presse_repeat_report(void)
     }
     else if (current_mode == MODE_SET_TEMP_SHOW)
     {
-        tempertureShowTime++;
+        temperature_show_time++;
 
-        if (tempertureShowTime > TEMPERTURE_MAX_SHOW_TIME)
+        if (temperature_show_time > TEMPERTURE_MAX_SHOW_TIME)
         {
-            tempertureShowTime = tempertureHideTime == 0 ? 1 : 0;
+            temperature_show_time = temperature_hide_time == 0 ? 1 : 0;
         }
 
         blink_control = 0;
@@ -249,11 +249,11 @@ void set_key_presse_repeat_report(void)
     }
     else if (current_mode == MODE_SET_TEMP_HIDE)
     {
-        tempertureHideTime++;
+        temperature_hide_time++;
 
-        if (tempertureHideTime > TEMPERTURE_MAX_HIDE_TIME)
+        if (temperature_hide_time > TEMPERTURE_MAX_HIDE_TIME)
         {
-            tempertureHideTime = tempertureShowTime == 0 ? 1 : 0;
+            temperature_hide_time = temperature_show_time == 0 ? 1 : 0;
         }
 
         blink_control = 0;
@@ -261,11 +261,11 @@ void set_key_presse_repeat_report(void)
     }
     else if (current_mode == MODE_SET_ROT_START)
     {
-        ringOnTimeStart++;
+        ring_on_time_start++;
 
-        if (ringOnTimeStart > 23)
+        if (ring_on_time_start > 23)
         {
-            ringOnTimeStart = 0;
+            ring_on_time_start = 0;
         }
 
         blink_control = 0;
@@ -273,11 +273,11 @@ void set_key_presse_repeat_report(void)
     }
     else if (current_mode == MODE_SET_ROT_STOP)
     {
-        ringOnTimeStop++;
+        ring_on_time_stop++;
 
-        if (ringOnTimeStop > 23)
+        if (ring_on_time_stop > 23)
         {
-            ringOnTimeStop = 0;
+            ring_on_time_stop = 0;
         }
 
         blink_control = 0;
@@ -291,7 +291,7 @@ void set_key_presse_repeat_report(void)
  */
 void set_key_pressed(void)
 {
-    lastSetKeyPressTime = HAL_GetTick();
+    last_set_key_press_time = HAL_GetTick();
 }
 
 /**
@@ -303,15 +303,15 @@ void set_key_released(void)
 
     current_val = HAL_GetTick();
 
-    if (lastSetKeyPressTime > current_val)
+    if (last_set_key_press_time > current_val)
     {
         set_key_clicked();
     }
-    else if (current_val - lastSetKeyPressTime > KEY_CLICK_EFFECT_TIME && !setKeyRepeatReported)
+    else if (current_val - last_set_key_press_time > KEY_CLICK_EFFECT_TIME && !set_key_repeat_reported)
     {
         set_key_clicked();
     }
 
-    setKeyRepeatReported = false;
+    set_key_repeat_reported = false;
 }
 

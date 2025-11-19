@@ -59,7 +59,7 @@ void tim_interrupt_handler(TIM_HandleTypeDef *htim)
         if (save_brightness == 0) // 自动亮度模式
         {
             /* 环境光线变强 -> 提高亮度 */
-            if (is_weak_brightness && adcValue[0] > STRONG_BRIGHTNESS_ADC_VALUE)
+            if (is_weak_brightness && adc_value[0] > STRONG_BRIGHTNESS_ADC_VALUE)
             {
                 is_weak_brightness = false;
                 
@@ -69,7 +69,7 @@ void tim_interrupt_handler(TIM_HandleTypeDef *htim)
                 }
             }
             /* 环境光线变弱 -> 降低亮度 */
-            else if (!is_weak_brightness && adcValue[0] < WEAK_BRIGHTNESS_ADC_VALUE)
+            else if (!is_weak_brightness && adc_value[0] < WEAK_BRIGHTNESS_ADC_VALUE)
             {
                 is_weak_brightness = true;
                 

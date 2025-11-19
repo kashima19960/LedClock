@@ -29,10 +29,10 @@ int main(void)
     key_init();
     register_exti_interrupt_callback(exti_interrupt_handler);
     register_timer_interrupt_callback(tim_interrupt_handler);
-    uint8_t backupData[BAK_DATA_SIZE];
-    read_backup_data(BAK_POWER_DOWN_IND_INDEX, backupData, BAK_DATA_SIZE);
+    uint8_t backup_data[BAK_DATA_SIZE];
+    read_backup_data(BAK_POWER_DOWN_IND_INDEX, backup_data, BAK_DATA_SIZE);
     // 非正常关机，初始化时间为2020-01-01 00:00:00
-    if (backupData[0] != POWER_DOWN_IND_DATA && backupData[1] != POWER_DOWN_IND_DATA)
+    if (backup_data[0] != POWER_DOWN_IND_DATA && backup_data[1] != POWER_DOWN_IND_DATA)
     {
         time.year = YEAR_MIN_SET;
         time.month = 1;
@@ -49,20 +49,20 @@ int main(void)
     }
     else // 正常关机，读取设置
     {
-        isAlarmEnabled = backupData[BAK_ALARM_ENABLED_INDEX];
-        alarmHour = backupData[BAK_ALARM_HOUR_INDEX];
-        alarmMin = backupData[BAK_ALARM_MINUTE_INDEX];
-        tempertureShowTime = backupData[BAK_TEMP_SHOW_TIME_INDEX];
-        tempertureHideTime = backupData[BAK_TEMP_HIDE_TIME_INDEX];
-        isRingOnTimeEnabled = backupData[BAK_ROT_ENABLED_INDEX];
-        ringOnTimeStart = backupData[BAK_ROT_START_INDEX];
-        ringOnTimeStop = backupData[BAK_ROT_STOP_INDEX];
-        save_brightness = backupData[BAK_BRIGHTNESS_INDEX];
-        strong_brightness = backupData[BAK_BRIGHTNESS_STRONG_INDEX];
-        weak_brightness = backupData[BAK_BRIGHTNESS_WEAK_INDEX];
+        is_alarm_enabled = backup_data[BAK_ALARM_ENABLED_INDEX];
+        alarm_hour = backup_data[BAK_ALARM_HOUR_INDEX];
+        alarm_min = backup_data[BAK_ALARM_MINUTE_INDEX];
+        temperature_show_time = backup_data[BAK_TEMP_SHOW_TIME_INDEX];
+        temperature_hide_time = backup_data[BAK_TEMP_HIDE_TIME_INDEX];
+        is_ring_on_time_enabled = backup_data[BAK_ROT_ENABLED_INDEX];
+        ring_on_time_start = backup_data[BAK_ROT_START_INDEX];
+        ring_on_time_stop = backup_data[BAK_ROT_STOP_INDEX];
+        save_brightness = backup_data[BAK_BRIGHTNESS_INDEX];
+        strong_brightness = backup_data[BAK_BRIGHTNESS_STRONG_INDEX];
+        weak_brightness = backup_data[BAK_BRIGHTNESS_WEAK_INDEX];
     }
 
-    if (alarmHour > (uint8_t)23 || alarmMin > (uint8_t)59 || ringOnTimeStart > 23 || ringOnTimeStop > 23 ||
+    if (alarm_hour > (uint8_t)23 || alarm_min > (uint8_t)59 || ring_on_time_start > 23 || ring_on_time_stop > 23 ||
         save_brightness > 8 || strong_brightness > 8 || strong_brightness == 0 || weak_brightness > 8 ||
         weak_brightness == 0)
     {
@@ -71,6 +71,7 @@ int main(void)
     }
 
     tm1637_init();
+    
     if (save_brightness != 0)
     {
         tm1637_set_brightness(save_brightness);
@@ -82,74 +83,74 @@ int main(void)
     }
 
     HAL_ADCEx_Calibration_Start(&g_adc_handle);
-    HAL_ADC_Start_DMA(&g_adc_handle, adcValue, 2);
+    HAL_ADC_Start_DMA(&g_adc_handle, adc_value, 2);
     HAL_TIM_Base_Start(&g_tim3_handle);
 
     HAL_TIM_Base_Start_IT(&LIGHT_CONTROL_TIMER_HANDLE);
 
     time_now(&time);
-    lastRingOnTimeHour = time.hours;
+    last_ring_on_time_hour = time.hours;
 
     enable_second_interrupt_output();
 
-    lastDisplayChangeTime = HAL_GetTick();
+    last_display_change_time = HAL_GetTick();
 
     is_init_completed = true;
 
-    uint32_t now = 0, passedTime;
+    uint32_t now = 0, passed_time;
     // 蜂鸣器高电平关闭，低电平响铃
     while (1)
     {
-        if (HAL_GPIO_ReadPin(BUZZER_GPIO_PORT, BUZZER_PIN) == GPIO_PIN_RESET && !isAlarming)
+        if (HAL_GPIO_ReadPin(BUZZER_GPIO_PORT, BUZZER_PIN) == GPIO_PIN_RESET && !is_alarming)
         {
             now = HAL_GetTick();
-            if (now < ringStartTime || (now - ringStartTime >= RING_ON_TIME_LONG))
+            if (now < ring_start_time || (now - ring_start_time >= RING_ON_TIME_LONG))
             {
                 // 关闭蜂鸣器
                 HAL_GPIO_WritePin(BUZZER_GPIO_PORT, BUZZER_PIN, GPIO_PIN_SET);
             }
         }
 
-        if (tempertureShowTime > 0)
+        if (temperature_show_time > 0)
         {
             if (current_mode == MODE_SHOW_TIME)
             {
                 now = HAL_GetTick();
-                passedTime = now - lastDisplayChangeTime;
-                if (now < lastDisplayChangeTime || passedTime >= (tempertureHideTime * 1000))
+                passed_time = now - last_display_change_time;
+                if (now < last_display_change_time || passed_time >= (temperature_hide_time * 1000))
                 {
                     current_mode = MODE_SHOW_TEMPERTURE;
-                    lastDisplayChangeTime = now;
+                    last_display_change_time = now;
                 }
             }
-            else if (current_mode == MODE_SHOW_TEMPERTURE && tempertureHideTime > 0)
+            else if (current_mode == MODE_SHOW_TEMPERTURE && temperature_hide_time > 0)
             {
                 now = HAL_GetTick();
-                passedTime = now - lastDisplayChangeTime;
-                if (now < lastDisplayChangeTime || passedTime >= (tempertureShowTime * 1000))
+                passed_time = now - last_display_change_time;
+                if (now < last_display_change_time || passed_time >= (temperature_show_time * 1000))
                 {
                     current_mode = MODE_SHOW_TIME;
-                    lastDisplayChangeTime = now;
+                    last_display_change_time = now;
                 }
             }
         }
         else if (current_mode == MODE_SHOW_TEMPERTURE)
         {
             current_mode = MODE_SHOW_TIME;
-            lastDisplayChangeTime = now;
+            last_display_change_time = now;
         }
 
         if (HAL_GPIO_ReadPin(SET_KEY_GPIO_PORT, SET_KEY_PIN) == GPIO_PIN_RESET && current_mode >= MODE_SET_HOUR &&
             current_mode <= MODE_SET_ROT_STOP)
         {
-            uint32_t curVal = HAL_GetTick();
-            uint32_t timePassed = curVal - lastSetKeyPressTime;
-            if (timePassed > KEY_LONG_PRESS_EFFECT_TIME)
+            uint32_t cur_val = HAL_GetTick();
+            uint32_t time_passed = cur_val - last_set_key_press_time;
+            if (time_passed > KEY_LONG_PRESS_EFFECT_TIME)
             {
-                if (curVal - lastSetKeyPressReportTime > KEY_REPEAT_TIME_INTERVAL)
+                if (cur_val - last_set_key_press_report_time > KEY_REPEAT_TIME_INTERVAL)
                 {
                     set_key_presse_repeat_report();
-                    lastSetKeyPressReportTime = curVal;
+                    last_set_key_press_report_time = cur_val;
                 }
             }
         }
