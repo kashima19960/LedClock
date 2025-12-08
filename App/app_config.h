@@ -40,9 +40,9 @@
 #define TEMP_BUFFER_SIZE                 8
 #define TEMP_MAP_SIZE                    126
 
-#define TM1637_CLK_PIN                   GPIO_PIN_0
+#define TM1637_CLK_PIN                   GPIO_PIN_1
 #define TM1637_CLK_GPIO_PORT             GPIOF
-#define TM1637_DIO_PIN                   GPIO_PIN_1
+#define TM1637_DIO_PIN                   GPIO_PIN_0
 #define TM1637_DIO_GPIO_PORT             GPIOF
 
 #define LIGHT_PIN                        GPIO_PIN_0
@@ -51,11 +51,11 @@
 #define NTC_PIN                          GPIO_PIN_1
 #define NTC_GPIO_PORT                    GPIOA
 
-#define MODE_KEY_PIN                     GPIO_PIN_2
+#define MODE_KEY_PIN                     GPIO_PIN_3
 #define MODE_KEY_GPIO_PORT               GPIOA
 #define MODE_KEY_EXTI_IRQn               EXTI2_3_IRQn
 
-#define SET_KEY_PIN                      GPIO_PIN_3
+#define SET_KEY_PIN                      GPIO_PIN_2
 #define SET_KEY_GPIO_PORT                GPIOA
 #define SET_KEY_EXTI_IRQn                EXTI2_3_IRQn
 
