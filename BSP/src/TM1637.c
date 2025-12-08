@@ -1,33 +1,27 @@
 #include "tm1637.h"
-static void tm1637_write_byte(uint8_t b);
-const uint8_t number_map[] = {
-    0x3f, // 0d
-    0x06, // 1d
-    0x5b, // 2d
-    0x4f, // 3d
-    0x66, // 4d
-    0x6d, // 5d
-    0x7d, // 6d
-    0x07, // 7d
-    0x7f, // 8d
-    0x6f, // 9d
-};
+#include <stdbool.h>
+#include "delay.h"
 
-void delay(uint32_t i)
-{
-    for (; i > 0; i--)
-    {
-        for (int j = 0; j < 10; ++j)
-        {
-            // asm("nop");
-        }
-    }
-}
+static void tm1637_write_byte(uint8_t b);
+
+const uint8_t number_map[] = {
+    0x3f, // 0d 0b0011 1111
+    0x06, // 1d 0b0000 0110
+    0x5b, // 2d 0b0101 1011
+    0x4f, // 3d 0b0100 1111
+    0x66, // 4d 0b0110 0110
+    0x6d, // 5d 0b0110 1101
+    0x7d, // 6d 0b0111 1101
+    0x07, // 7d 0b0000 0111
+    0x7f, // 8d 0b0111 1111
+    0x6f, // 9d 0b0110 1111
+    0x80  // .  0b1000 0000
+};
 
 void tm1637_gpio_init(void)
 {
     TM1637_CLK_DIO_GPIO_CLK_ENABLE();
-    HAL_GPIO_WritePin(TM1637_CLK_PORT, TM1637_CLK_PIN|TM1637_DIO_PIN, GPIO_PIN_SET);
+    HAL_GPIO_WritePin(TM1637_CLK_GPIO_PORT, TM1637_CLK_PIN|TM1637_DIO_PIN, GPIO_PIN_SET);
     GPIO_InitTypeDef gpio_init_struct;
     gpio_init_struct.Pin = TM1637_CLK_PIN | TM1637_DIO_PIN;
     gpio_init_struct.Mode = GPIO_MODE_OUTPUT_OD;
@@ -51,28 +45,41 @@ static void tm1637_start(void)
 {
     TM1637_CLK(1);
     TM1637_DIO(1);
-    delay(2);
+    delay_us(2);
     TM1637_DIO(0);
 }
 
 static void tm1637_stop(void)
 {
     TM1637_CLK(0);
-    delay(2);
+    delay_us(2);
     TM1637_DIO(0);
-    delay(2);
+    delay_us(2);
     TM1637_CLK(1);
-    delay(2);
+    delay_us(2);
     TM1637_DIO(1);
 }
 
 static void tm1637_ack(void)
 {
+    // TM1637_CLK(0);
+    // delay_us(5);
+    
+    // // 添加超时保护，防止死循环
+    // uint32_t timeout = 10000;
+    // while (TM1637_READ_DIO && timeout > 0)
+    // {
+    //     timeout--;
+    // }
+    
+    // // 无论是否超时，都要完成时钟周期，保持总线状态正确
+    // TM1637_CLK(1);
+    // delay_us(2);
+    // TM1637_CLK(0);
     TM1637_CLK(0);
-    delay(5);
-    while (TM1637_READ_DIO);
+    delay_us(5);
     TM1637_CLK(1);
-    delay(2);
+    delay_us(2);
     TM1637_CLK(0);
 }
 
@@ -150,7 +157,7 @@ uint32_t power(uint32_t x, uint8_t n)
 void tm1637_init(void)
 {
     tm1637_gpio_init();
-    tm1637_set_brightness(8);
+    // tm1637_set_brightness(4);
 }
 
 void tm1637_set_brightness(uint8_t brightness)
@@ -233,12 +240,12 @@ void tm1637_set_char(uint8_t index, char c, uint8_t point)
 void tm1637_set_raw_data(uint8_t index, uint8_t data)
 {
     tm1637_start();
-    tm1637_write_byte(0x44); //0x44=0100 0100 固定地址模式
+    tm1637_write_byte(0x44); //0x44=0100 0100 固定地址,写数据到显示寄存器
     tm1637_ack();
     tm1637_stop();
 
     tm1637_start();
-    tm1637_write_byte(0xC0 + index); // 0xC0=1100 0000 index 0~5
+    tm1637_write_byte(0xC0 + index); // 0xC0=1100 0000 index 0~3
     tm1637_ack();
     tm1637_write_byte(data);
     tm1637_ack();
@@ -259,9 +266,9 @@ void tm1637_write_byte(uint8_t data_byte)
         {
             TM1637_DIO(0);
         }
-        delay(3);
+        delay_us(3);
         data_byte >>= 1;
         TM1637_CLK(1);
-        delay(3);
+        delay_us(3);
     }
 }
