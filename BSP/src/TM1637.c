@@ -1,3 +1,7 @@
+/*
+tm1637底层驱动代码
+*/
+
 #include "tm1637.h"
 #include <stdbool.h>
 #include "delay.h"
@@ -23,9 +27,9 @@ void tm1637_gpio_init(void)
     TM1637_CLK_DIO_GPIO_CLK_ENABLE();
     HAL_GPIO_WritePin(TM1637_CLK_GPIO_PORT, TM1637_CLK_PIN|TM1637_DIO_PIN, GPIO_PIN_SET);
     GPIO_InitTypeDef gpio_init_struct;
-    gpio_init_struct.Pin = TM1637_CLK_PIN | TM1637_DIO_PIN;
-    gpio_init_struct.Mode = GPIO_MODE_OUTPUT_OD;
-    gpio_init_struct.Pull = GPIO_NOPULL; // 硬件上外接了两个10K电阻到5V，不需要再上拉
+    gpio_init_struct.Pin   = TM1637_CLK_PIN | TM1637_DIO_PIN;
+    gpio_init_struct.Mode  = GPIO_MODE_OUTPUT_OD;
+    gpio_init_struct.Pull  = GPIO_NOPULL; // 硬件上外接了两个10K电阻到5V，不需要再上拉
     gpio_init_struct.Speed = GPIO_SPEED_FREQ_HIGH;
     HAL_GPIO_Init(GPIOF, &gpio_init_struct);
 }
@@ -62,20 +66,6 @@ static void tm1637_stop(void)
 
 static void tm1637_ack(void)
 {
-    // TM1637_CLK(0);
-    // delay_us(5);
-    
-    // // 添加超时保护，防止死循环
-    // uint32_t timeout = 10000;
-    // while (TM1637_READ_DIO && timeout > 0)
-    // {
-    //     timeout--;
-    // }
-    
-    // // 无论是否超时，都要完成时钟周期，保持总线状态正确
-    // TM1637_CLK(1);
-    // delay_us(2);
-    // TM1637_CLK(0);
     TM1637_CLK(0);
     delay_us(5);
     TM1637_CLK(1);
@@ -157,24 +147,25 @@ uint32_t power(uint32_t x, uint8_t n)
 void tm1637_init(void)
 {
     tm1637_gpio_init();
-    // tm1637_set_brightness(4);
+    tm1637_set_brightness(4);
 }
 
 void tm1637_set_brightness(uint8_t brightness)
 {
-    // Brightness command:
-    // 1000 0XXX = display off
-    // 1000 1BBB = display on, brightness 0-7
-    // X = don't care
-    // B = brightness
+    /* Brightness command:
+     * 1000 0XXX = display off
+     * 1000 1BBB = display on, brightness 0-7
+     * X = don't care
+     * B = brightness
+     */
     tm1637_start();
     tm1637_write_byte(0x87 + brightness); // 0x87=10000111
     tm1637_ack();
     tm1637_stop();
 }
 
-// tm1637_show_number_right(3, number, blink_control ? 2 : 0xFF, 1);
-void tm1637_show_number_right(uint8_t index, uint32_t num, uint8_t pointLocation, uint8_t isPaddingZero)
+// 参数使用示例tm1637_show_number_right(3, number, blink_control ? 2 : 0xFF, 1);
+void tm1637_show_number_right(uint8_t index, uint32_t num, uint8_t pointLocation, uint8_t is_padding_zero)
 {
 
     uint8_t n = 6;
@@ -190,7 +181,7 @@ void tm1637_show_number_right(uint8_t index, uint32_t num, uint8_t pointLocation
     uint8_t digits[6];
     for (uint8_t i = 0; i < 6; i++)
     {
-        if (i < n || isPaddingZero)
+        if (i < n || is_padding_zero)
         {
             digits[i] = number_map[num % 10];
         }
@@ -251,7 +242,9 @@ void tm1637_set_raw_data(uint8_t index, uint8_t data)
     tm1637_ack();
     tm1637_stop();
 }
-
+/*
+写一个字节
+*/
 void tm1637_write_byte(uint8_t data_byte)
 {
     uint8_t i;

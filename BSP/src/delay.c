@@ -2,21 +2,12 @@
 
 static uint32_t g_fac_us = 0;
 
-/**
- * @brief     初始化延迟函数
- * @param     sysclk: 系统时钟频率(MHz)
- * @retval    无
- */
 void delay_init(uint16_t sysclk)
 {
     g_fac_us = sysclk;
 }
 
-/**
- * @brief     延时nus
- * @param     nus: 要延时的us数
- * @retval    无
- */
+//微秒延时，抄正点原子的程序
 void delay_us(uint32_t nus)
 {
     uint32_t ticks;

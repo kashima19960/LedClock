@@ -21,7 +21,7 @@ void register_exti_interrupt_callback(exti_interrupt_callback_t callback)
 }
 
 void SysTick_Handler(void)
-{
+{ 
     HAL_IncTick();
 }
 

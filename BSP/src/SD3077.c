@@ -137,7 +137,8 @@ void time_now(DateTime *dateTime)
 }
 
 void set_time(DateTime *dateTime)
-{ // 解除写保护
+{ 
+    // 解除写保护
     unlock_write_protect();
 
     uint8_t data[7];
@@ -186,6 +187,7 @@ void set_interrupt_output(SD3077IntFreq freq)
 
     // 控制寄存器回写
     HAL_I2C_Mem_Write(&SD3077_IIC_HANDLE, SD3077_IIC_ADDR_WRITE, SD3077_REG_CTR2, 1, data, 2, HAL_MAX_DELAY);
+    lock_write_protect();
 }
 
 /*
@@ -242,7 +244,6 @@ void read_backup_data(uint8_t index, uint8_t *data, uint8_t size)
     {
         return;
     }
-
     // 从备份寄存器读出
     HAL_I2C_Mem_Read(&SD3077_IIC_HANDLE, SD3077_IIC_ADDR_READ, SD3077_REG_SRAM_START + index, 1, data, size,HAL_MAX_DELAY);
 }
