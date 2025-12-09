@@ -217,7 +217,7 @@ typedef enum
 void time_now(DateTime *dateTime);
 void set_time(DateTime *dateTime);
 void set_interrupt_output(SD3077IntFreq freq);
-void enable_second_interrupt_output();
+void enable_second_interrupt_output(void);
 void write_backup_data(uint8_t index, uint8_t *data, uint8_t size);
 void read_backup_data(uint8_t index, uint8_t *data, uint8_t size);
 void sec_int_gpio_init(void);

@@ -56,7 +56,7 @@ void alarm_timer_tick()
         // 短鸣XX毫秒
         if (alarm_timestamp > on_time)
         {
-            HAL_GPIO_WritePin(BUZZER_GPIO_PORT, BUZZER_PIN, SET);
+            HAL_GPIO_WritePin(BUZZER_GPIO_PORT, BUZZER_PIN, GPIO_PIN_SET);
             alarm_beep_count++;
             alarm_timestamp = 0;
         }
@@ -69,14 +69,14 @@ void alarm_timer_tick()
             // 两次短鸣时间间隔
             if (alarm_timestamp > off_time)
             {
-                HAL_GPIO_WritePin(BUZZER_GPIO_PORT, BUZZER_PIN, RESET);
+                HAL_GPIO_WritePin(BUZZER_GPIO_PORT, BUZZER_PIN, GPIO_PIN_RESET);
                 alarm_timestamp = 0;
             }
         }
         // 鸣X+1次后停止响铃一段时间
         else if (alarm_timestamp > rest_time)
         {
-            HAL_GPIO_WritePin(BUZZER_GPIO_PORT, BUZZER_PIN, RESET);
+            HAL_GPIO_WritePin(BUZZER_GPIO_PORT, BUZZER_PIN, GPIO_PIN_RESET);
             alarm_timestamp = 0;
             alarm_beep_count = 0;
         }
@@ -87,7 +87,7 @@ void alarm_stop()
 {
     is_alarming = false;
     HAL_TIM_Base_Stop_IT(&ALARM_CONTROL_TIMER_HANDLE);
-    HAL_GPIO_WritePin(BUZZER_GPIO_PORT, BUZZER_PIN, SET);
+    HAL_GPIO_WritePin(BUZZER_GPIO_PORT, BUZZER_PIN, GPIO_PIN_SET);
 }
 
 void check_alarm()

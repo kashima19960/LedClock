@@ -5,7 +5,7 @@
 
 void check_ring_on_time(void);
 void alarm_start(void);
-void alarm_timer_tick();
+void alarm_timer_tick(void);
 void alarm_stop(void);
 void check_alarm(void);
 

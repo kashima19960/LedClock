@@ -4,6 +4,7 @@
 #include "app_setkey.h"
 #include "app_state.h"
 #include "tm1637.h"
+#include "app_alarm.h"
 void exti_interrupt_handler(uint16_t gpio_pin)
 {
     /* 秒中断处理 */

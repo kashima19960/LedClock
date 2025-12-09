@@ -126,7 +126,7 @@ void time_now(DateTime *dateTime)
     }
     else // 12小时制，根据D5判断AM/PM
     {
-        dateTime->ampm = (data[2] & 0x20) >> 5;
+        dateTime->ampm = (AM_PM)((data[2] & 0x20) >> 5);
         dateTime->hours = bcd2bin(data[2] & 0x1F);
     }
 
