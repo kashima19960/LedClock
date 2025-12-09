@@ -2,7 +2,7 @@
 #define __TM1637_H
 
 #include "stm32f0xx_hal.h"
-#include "app_config.h"
+#include "bsp_config.h"
 #define TM1637_DP_0  0x01
 #define TM1637_DP_1  0x02
 #define TM1637_DP_2  0x04

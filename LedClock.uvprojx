@@ -433,49 +433,9 @@
               <FilePath>.\App\system_stm32f0xx.c</FilePath>
             </File>
             <File>
-              <FileName>app_alarm.h</FileName>
-              <FileType>5</FileType>
-              <FilePath>.\App\app_alarm.h</FilePath>
-            </File>
-            <File>
-              <FileName>app_config.h</FileName>
-              <FileType>5</FileType>
-              <FilePath>.\App\app_config.h</FilePath>
-            </File>
-            <File>
-              <FileName>app_display.h</FileName>
-              <FileType>5</FileType>
-              <FilePath>.\App\app_display.h</FilePath>
-            </File>
-            <File>
-              <FileName>app_interrupt_handler.h</FileName>
-              <FileType>5</FileType>
-              <FilePath>.\App\app_interrupt_handler.h</FilePath>
-            </File>
-            <File>
-              <FileName>app_modekey.h</FileName>
-              <FileType>5</FileType>
-              <FilePath>.\App\app_modekey.h</FilePath>
-            </File>
-            <File>
-              <FileName>app_setkey.h</FileName>
-              <FileType>5</FileType>
-              <FilePath>.\App\app_setkey.h</FilePath>
-            </File>
-            <File>
-              <FileName>app_settings.h</FileName>
-              <FileType>5</FileType>
-              <FilePath>.\App\app_settings.h</FilePath>
-            </File>
-            <File>
-              <FileName>app_state.h</FileName>
-              <FileType>5</FileType>
-              <FilePath>.\App\app_state.h</FilePath>
-            </File>
-            <File>
-              <FileName>stm32f0xx_hal_conf.h</FileName>
-              <FileType>5</FileType>
-              <FilePath>.\App\stm32f0xx_hal_conf.h</FilePath>
+              <FileName>buzzer.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\BSP\src\buzzer.c</FilePath>
             </File>
           </Files>
         </Group>
@@ -486,11 +446,6 @@
               <FileName>adc.c</FileName>
               <FileType>1</FileType>
               <FilePath>.\BSP\src\adc.c</FilePath>
-            </File>
-            <File>
-              <FileName>dma.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>.\BSP\src\dma.c</FilePath>
             </File>
             <File>
               <FileName>exti.c</FileName>

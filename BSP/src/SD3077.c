@@ -1,5 +1,5 @@
 #include "sd3077.h"
-#include "app_config.h"
+#include "bsp_config.h"
 I2C_HandleTypeDef g_iic_handle;
 /*
 sd3077硬件上接了，PA9--I2C1_SCL,PA10--I2C1_SDA,PB1--SEC-INT
@@ -30,18 +30,6 @@ void sd3077_iic_init(void)
         Error_Handler();
     }
 }
-void sec_int_gpio_init(void)
-{
-    GPIO_InitTypeDef gpio_init_struct = {0};
-    SD3077_SEC_INT_GPIO_CLK_ENABLE();
-    gpio_init_struct.Pin = SEC_INT_PIN;
-    gpio_init_struct.Mode = GPIO_MODE_IT_FALLING;
-    gpio_init_struct.Pull = GPIO_PULLUP;
-    HAL_GPIO_Init(SEC_INT_GPIO_PORT, &gpio_init_struct);
-    HAL_NVIC_SetPriority(EXTI0_1_IRQn, 0, 0);
-    HAL_NVIC_EnableIRQ(EXTI0_1_IRQn);
-}
-
 void HAL_I2C_MspInit(I2C_HandleTypeDef *i2cHandle)
 {
     GPIO_InitTypeDef gpio_init_struct = {0};
@@ -58,10 +46,20 @@ void HAL_I2C_MspInit(I2C_HandleTypeDef *i2cHandle)
     }
 }
 
+void sd3077_sec_int_gpio_init(void)
+{
+    GPIO_InitTypeDef gpio_init_struct = {0};
+    SD3077_SEC_INT_GPIO_CLK_ENABLE();
+    gpio_init_struct.Pin = SEC_INT_PIN;
+    gpio_init_struct.Mode = GPIO_MODE_IT_FALLING;
+    gpio_init_struct.Pull = GPIO_PULLUP;
+    HAL_GPIO_Init(SEC_INT_GPIO_PORT, &gpio_init_struct);
+    HAL_NVIC_SetPriority(EXTI0_1_IRQn, 0, 0);
+    HAL_NVIC_EnableIRQ(EXTI0_1_IRQn);
+}
+
 /**
  * @brief       解除SD3077写保护
- * @param       无
- * @retval      无
  * @note        必须按照顺序: WRTC1(CTR2) -> WRTC2(CTR1) -> WRTC3(CTR1)
  */
 static void unlock_write_protect(void)
@@ -112,51 +110,51 @@ static void lock_write_protect(void)
 实时时钟数据寄存器是7字节(0x00~0x06)的存储器，它以BCD 码方式存贮包括年、月、日、星期、时、分、
 秒的数据。
 */
-void time_now(DateTime *dateTime)
+void time_now(date_time *date_time)
 {
     uint8_t data[7];
     HAL_I2C_Mem_Read(&SD3077_IIC_HANDLE, SD3077_IIC_ADDR_READ, 0x00, 1, data, 7, HAL_MAX_DELAY);
-    dateTime->seconds = bcd2bin(data[0]);
-    dateTime->minutes = bcd2bin(data[1]);
+    date_time->seconds = bcd2bin(data[0]);
+    date_time->minutes = bcd2bin(data[1]);
 
     if (data[2] >> 7) // D7=1 24小时制 0 12小时制
     {
-        dateTime->ampm = HOUR24;
-        dateTime->hours = bcd2bin(data[2] & 0x7F); // 0x7F = 01111111
+        date_time->ampm = HOUR24;
+        date_time->hours = bcd2bin(data[2] & 0x7F); // 0x7F = 01111111
     }
     else // 12小时制，根据D5判断AM/PM
     {
-        dateTime->ampm = (AM_PM)((data[2] & 0x20) >> 5);
-        dateTime->hours = bcd2bin(data[2] & 0x1F);
+        date_time->ampm = (AM_PM)((data[2] & 0x20) >> 5);
+        date_time->hours = bcd2bin(data[2] & 0x1F);
     }
 
-    dateTime->dayOfWeek = bcd2bin(data[3]);
-    dateTime->dayOfMonth = bcd2bin(data[4]);
-    dateTime->month = bcd2bin(data[5]);
-    dateTime->year = bcd2bin(data[6]);
+    date_time->day_of_week = bcd2bin(data[3]);
+    date_time->day_of_month = bcd2bin(data[4]);
+    date_time->month = bcd2bin(data[5]);
+    date_time->year = bcd2bin(data[6]);
 }
 
-void set_time(DateTime *dateTime)
+void set_time(date_time *data_time)
 { 
     // 解除写保护
     unlock_write_protect();
 
     uint8_t data[7];
-    data[0] = bin2bcd(dateTime->seconds);
-    data[1] = bin2bcd(dateTime->minutes);
-    data[2] = bin2bcd(dateTime->hours);
-    data[3] = bin2bcd(dateTime->dayOfWeek);
-    data[4] = bin2bcd(dateTime->dayOfMonth);
-    data[5] = bin2bcd(dateTime->month);
-    data[6] = bin2bcd(dateTime->year);
+    data[0] = bin2bcd(data_time->seconds);
+    data[1] = bin2bcd(data_time->minutes);
+    data[2] = bin2bcd(data_time->hours);
+    data[3] = bin2bcd(data_time->day_of_week);
+    data[4] = bin2bcd(data_time->day_of_month);
+    data[5] = bin2bcd(data_time->month);
+    data[6] = bin2bcd(data_time->year);
 
-    if ((dateTime->ampm) == HOUR24)
+    if ((data_time->ampm) == HOUR24)
     {
         data[2] |= 0x80;
     }
     else
     {
-        data[2] |= (dateTime->ampm) << 5;
+        data[2] |= (data_time->ampm) << 5;
     }
 
     HAL_I2C_Mem_Write(&SD3077_IIC_HANDLE, SD3077_IIC_ADDR_WRITE, 0x00, 1, data, 7, HAL_MAX_DELAY);
@@ -172,14 +170,13 @@ void set_interrupt_output(SD3077IntFreq freq)
     uint8_t data[2];
     HAL_I2C_Mem_Read(&SD3077_IIC_HANDLE, SD3077_IIC_ADDR_READ, SD3077_REG_CTR2, 1, data, 2, HAL_MAX_DELAY);
 
-    // 允许频率中断
-    data[0] |= 0x01;
+    data[0] |= 0x01; // 0x01=00000001,置INTFE=1 允许频率中断
     // 选择频率中断输出
-    data[0] |= 0x20;
-    data[0] &= 0xEF;
+    data[0] |= 0x20; // 0x20=00100000,置INTS1=1
+    data[0] &= 0xEF; // 0xEF=11101111,清INTS0=0
 
-    // 设置频率为1Hz
-    data[1] &= 0xF0;
+    // 设置频率为1Hz 
+    data[1] &= 0xF0; // 0xF0=11110000,清除FS3、FS2、FS1、FS0位
     data[1] |= freq;
 
     // 设置频率为1秒

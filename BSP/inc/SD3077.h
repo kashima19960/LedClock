@@ -71,6 +71,12 @@ val为：val = T * 16 + O
  * D2:    FS2   (频率中断输出选择2)
  * D1:    FS1   (频率中断输出选择1)
  * D0:    FS0   (频率中断输出选择0)
+ * 
+ * 频率中断输出选择(FS3-FS0)对应表:
+ * 0000=0Hz,    0010=4096Hz,  0011=1024Hz,  0100=64Hz, 
+ * 0101=32Hz,   0110=16Hz,    0111=8Hz,     1000=4Hz,
+ * 1001=2Hz,    1010=1Hz,     1011=0.5Hz,   1100=0.25Hz,
+ * 1101=0.125Hz, 1110=0.0625Hz, 1111=1秒
  */
 #define SD3077_REG_CTR3             (0x11)
 
@@ -184,13 +190,13 @@ typedef struct
 {
     uint8_t year;
     uint8_t month;
-    uint8_t dayOfMonth;
-    uint8_t dayOfWeek;
+    uint8_t day_of_month;
+    uint8_t day_of_week;
     uint8_t hours;
     uint8_t minutes;
     uint8_t seconds;
     AM_PM ampm;
-} DateTime;
+} date_time;
 
 /**
  * SD3077的中断输出频率定义，为0即关闭中断输出
@@ -214,12 +220,12 @@ typedef enum
     F_1_S        = 0x0F,
 } SD3077IntFreq;
 
-void time_now(DateTime *dateTime);
-void set_time(DateTime *dateTime);
+void time_now(date_time *dateTime);
+void set_time(date_time *dateTime);
 void set_interrupt_output(SD3077IntFreq freq);
 void enable_second_interrupt_output(void);
 void write_backup_data(uint8_t index, uint8_t *data, uint8_t size);
 void read_backup_data(uint8_t index, uint8_t *data, uint8_t size);
-void sec_int_gpio_init(void);
+void sd3077_sec_int_gpio_init(void);
 void sd3077_iic_init(void);
 #endif

@@ -10,7 +10,7 @@ const uint16_t temperature_map[] = {
     3790, 3797, 3803, 3809, 3815, 3821, 3827, 3833, 3839, 3844, 3849, 3854, 3859, 3864, 3869, 3874, 3878, 3883,
 };
 
-DisplayMode current_mode = MODE_SHOW_TIME;
+display_mode current_mode = MODE_SHOW_TIME;
 bool is_init_completed = false;
 uint32_t last_display_change_time;
 
@@ -18,25 +18,34 @@ uint32_t adc_value[2]; // [0] - light, [1] - ntc
 
 uint8_t save_brightness = 0;
 bool is_weak_brightness = true;
-uint8_t strong_brightness, weak_brightness;
+uint8_t strong_brightness;
+uint8_t weak_brightness;
 
-DateTime time, last_time;
+date_time time;
+date_time last_time;
 uint8_t blink_control;
 
-bool is_alarm_enabled = false;
-bool is_alarmed = false, is_alarming = false;
-uint8_t alarm_hour = 0, alarm_min = 0;
+bool is_alarm_enabled  = false;
+bool is_alarmed        = false;
+bool is_alarming       = false;
+uint8_t alarm_hour     = 0;
+uint8_t alarm_min      = 0;
  
 bool is_ring_on_time_enabled;
-uint8_t ring_on_time_start, ring_on_time_stop;
+uint8_t ring_on_time_start;
+uint8_t ring_on_time_stop;
 uint8_t last_ring_on_time_hour;
 uint32_t ring_start_time;
 
-uint32_t last_mode_key_press_time, last_set_key_press_time, last_set_key_press_report_time;
-uint32_t alarm_timestamp, alarm_beep_count;
+uint32_t last_mode_key_press_time;
+uint32_t last_set_key_press_time;
+uint32_t last_set_key_press_report_time;
+uint32_t alarm_timestamp;
+uint32_t alarm_beep_count;
 bool set_key_repeat_reported = false;
 
 uint8_t temperature = 25;
-uint8_t temperature_show_time, temperature_hide_time;
+uint8_t temperature_show_time;
+uint8_t temperature_hide_time;
 uint8_t temp_buffered = 0;
 uint16_t temp_buffer[TEMP_BUFFER_SIZE + 1];

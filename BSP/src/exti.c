@@ -1,6 +1,6 @@
 #include "exti.h"
 
-#include "app_config.h" 
+#include "bsp_config.h" 
 
 extern DMA_HandleTypeDef g_dma_adc_handle;
 
