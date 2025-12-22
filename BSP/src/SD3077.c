@@ -235,6 +235,10 @@ void write_backup_data(uint8_t index, uint8_t *data, uint8_t size)
     lock_write_protect();
 }
 
+/*
+sd3077用户RAM(70bytes),范围:0x2C~0x71
+index: 0~69
+*/
 void read_backup_data(uint8_t index, uint8_t *data, uint8_t size)
 {
     if (index > 69)

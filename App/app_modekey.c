@@ -118,7 +118,7 @@ void mode_key_clicked(void)
     {
         blink_control = 0x00;
 
-        if (!is_ring_on_time_enabled)//is_ring_on_time_enabled=false
+        if (!is_ring_on_time_enabled) //is_ring_on_time_enabled=false
         {
             current_mode = MODE_SHOW_TIME;
             time_now(&time);
@@ -202,15 +202,15 @@ void mode_key_released(void)
 
     current_val = HAL_GetTick();
 
-    if (last_mode_key_press_time > current_val)
+    if (last_mode_key_press_time > current_val) //溢出处理
     {
         mode_key_clicked();
     }
-    else if (current_val - last_mode_key_press_time > KEY_LONG_PRESS_EFFECT_TIME)
+    else if (current_val - last_mode_key_press_time > KEY_LONG_PRESS_EFFECT_TIME) //长按
     {
         mode_key_long_pressed();
     }
-    else if (current_val - last_mode_key_press_time > KEY_CLICK_EFFECT_TIME)
+    else if (current_val - last_mode_key_press_time > KEY_CLICK_EFFECT_TIME) 
     {
         mode_key_clicked();
     }

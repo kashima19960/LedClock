@@ -7,7 +7,6 @@
 void refresh_temperture()
 {
     // 开启温度转换ADC
-
     uint32_t value;
     uint32_t src_value = adc_value[1];  // 读取ADC通道1(NTC)
 
@@ -29,7 +28,6 @@ void refresh_temperture()
         }
         value = value / TEMP_BUFFER_SIZE;
     }
-
     // 查表法: ADC值转温度(temperature_map数组存储了-20°C到105°C的ADC对应值)
     for (uint8_t i = 0; i < TEMP_MAP_SIZE; i++)
     {
@@ -39,7 +37,6 @@ void refresh_temperture()
             return;
         }
     }
-
     temperature = 0;  // 超出范围,返回0
     return;
 }

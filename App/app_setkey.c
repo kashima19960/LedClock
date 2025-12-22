@@ -303,7 +303,7 @@ void set_key_released(void)
 
     current_val = HAL_GetTick();
 
-    if (last_set_key_press_time > current_val)
+    if (last_set_key_press_time > current_val) //溢出处理
     {
         set_key_clicked();
     }

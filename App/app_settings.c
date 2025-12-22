@@ -40,18 +40,20 @@ void save_settings()
     backup_data[BAK_BRIGHTNESS_WEAK_INDEX]      = weak_brightness;
     write_backup_data(BAK_POWER_DOWN_IND_INDEX, backup_data, BAK_DATA_SIZE);
 }
-
+/*
+默认配置，可以自己修改
+*/
 void reset_settings()
 {
-    is_alarm_enabled        = false;
-    alarm_hour             = 0;
-    alarm_min              = 0;
-    temperature_show_time    = 2;
-    temperature_hide_time    = 10;
+    is_alarm_enabled          = false;
+    alarm_hour                = 12;
+    alarm_min                 = 0;
+    temperature_show_time     = 2;
+    temperature_hide_time     = 10;
     is_ring_on_time_enabled   = false;
-    ring_on_time_start       = 8;
-    ring_on_time_stop        = 20;
-    save_brightness       = 8;
-    strong_brightness      = 8;
-    weak_brightness       = 1;
+    ring_on_time_start        = 8;
+    ring_on_time_stop         = 22;
+    save_brightness           = 8;
+    strong_brightness         = 6;
+    weak_brightness           = 2;
 }
