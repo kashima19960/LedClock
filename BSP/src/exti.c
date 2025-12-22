@@ -2,21 +2,14 @@
 
 #include "bsp_config.h" 
 
-extern DMA_HandleTypeDef g_dma_adc_handle;
-
-
-/* 全局回调函数指针 */
 
 static exti_interrupt_callback_t g_interrupt_callback = NULL;
 
-/**
- * @brief 注册中断回调函数
- * @param callback 回调函数指针
- */
-
+/*
+注册外部中断
+*/
 void register_exti_interrupt_callback(exti_interrupt_callback_t callback)
 {
-
     g_interrupt_callback = callback;
 }
 
@@ -25,10 +18,6 @@ void SysTick_Handler(void)
     HAL_IncTick();
 }
 
-/**
- * @brief EXTI0_1中断处理函数
- * @note 处理SEC_INT秒中断
- */
 void EXTI0_1_IRQHandler(void)
 {
     /* SEC_INT秒中断 */ 
@@ -42,11 +31,6 @@ void EXTI0_1_IRQHandler(void)
         }
     }
 }
-
-/*
- * @brief EXTI2_3中断处理函数 
- * @note 处理MODE键和SET键的中断 
- */
 
 void EXTI2_3_IRQHandler(void) 
 {

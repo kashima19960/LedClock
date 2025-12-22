@@ -1,7 +1,3 @@
-/*
-tm1637底层驱动代码
-*/
-
 #include "tm1637.h"
 #include <stdbool.h>
 #include "delay.h"

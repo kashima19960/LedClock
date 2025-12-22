@@ -17,14 +17,14 @@ void register_timer_interrupt_callback(timer_interrupt_callback_t callback)
 void tim3_init(void)
 {
     TIM_ClockConfigTypeDef clock_source_config = {0};
-    TIM_MasterConfigTypeDef master_config = {0};
+    TIM_MasterConfigTypeDef master_config      = {0};
 
-    g_tim3_handle.Instance = TIM3;
-    g_tim3_handle.Init.Prescaler = (16-1);
-    g_tim3_handle.Init.CounterMode = TIM_COUNTERMODE_UP;
-    g_tim3_handle.Init.Period = (10000-1);
-    g_tim3_handle.Init.ClockDivision = TIM_CLOCKDIVISION_DIV1;
-    g_tim3_handle.Init.AutoReloadPreload = TIM_AUTORELOAD_PRELOAD_DISABLE;
+    g_tim3_handle.Instance                  = TIM3;
+    g_tim3_handle.Init.Prescaler            = (16-1);
+    g_tim3_handle.Init.CounterMode          = TIM_COUNTERMODE_UP;
+    g_tim3_handle.Init.Period               = (10000-1);
+    g_tim3_handle.Init.ClockDivision        = TIM_CLOCKDIVISION_DIV1;
+    g_tim3_handle.Init.AutoReloadPreload    = TIM_AUTORELOAD_PRELOAD_DISABLE;
     if (HAL_TIM_Base_Init(&g_tim3_handle) != HAL_OK)
     {
         Error_Handler();
@@ -35,7 +35,7 @@ void tim3_init(void)
         Error_Handler();
     }
     master_config.MasterOutputTrigger = TIM_TRGO_UPDATE;
-    master_config.MasterSlaveMode = TIM_MASTERSLAVEMODE_DISABLE;
+    master_config.MasterSlaveMode     = TIM_MASTERSLAVEMODE_DISABLE;
     if (HAL_TIMEx_MasterConfigSynchronization(&g_tim3_handle, &master_config) != HAL_OK)
     {
         Error_Handler();
@@ -48,13 +48,13 @@ void tim3_init(void)
 */
 void tim16_init(void)
 {
-    g_tim16_handle.Instance = TIM16;
-    g_tim16_handle.Init.Prescaler = (1600-1);
-    g_tim16_handle.Init.CounterMode = TIM_COUNTERMODE_UP;
-    g_tim16_handle.Init.Period = (10000-1);
-    g_tim16_handle.Init.ClockDivision = TIM_CLOCKDIVISION_DIV1;
-    g_tim16_handle.Init.RepetitionCounter = 0;
-    g_tim16_handle.Init.AutoReloadPreload = TIM_AUTORELOAD_PRELOAD_ENABLE;
+    g_tim16_handle.Instance                   = TIM16;
+    g_tim16_handle.Init.Prescaler             = (1600-1);
+    g_tim16_handle.Init.CounterMode           = TIM_COUNTERMODE_UP;
+    g_tim16_handle.Init.Period                = (10000-1);
+    g_tim16_handle.Init.ClockDivision         = TIM_CLOCKDIVISION_DIV1;
+    g_tim16_handle.Init.RepetitionCounter     = 0;
+    g_tim16_handle.Init.AutoReloadPreload     = TIM_AUTORELOAD_PRELOAD_ENABLE;
     if (HAL_TIM_Base_Init(&g_tim16_handle) != HAL_OK)
     {
         Error_Handler();
@@ -67,13 +67,13 @@ void tim16_init(void)
 */
 void tim17_init(void)
 {
-    g_tim17_handle.Instance = TIM17;
-    g_tim17_handle.Init.Prescaler = (16-1);
-    g_tim17_handle.Init.CounterMode = TIM_COUNTERMODE_UP;
-    g_tim17_handle.Init.Period = (1000-1);
-    g_tim17_handle.Init.ClockDivision = TIM_CLOCKDIVISION_DIV1;
-    g_tim17_handle.Init.RepetitionCounter = 0;
-    g_tim17_handle.Init.AutoReloadPreload = TIM_AUTORELOAD_PRELOAD_ENABLE;
+    g_tim17_handle.Instance                   = TIM17;
+    g_tim17_handle.Init.Prescaler             = (16-1);
+    g_tim17_handle.Init.CounterMode           = TIM_COUNTERMODE_UP;
+    g_tim17_handle.Init.Period                = (1000-1);
+    g_tim17_handle.Init.ClockDivision         = TIM_CLOCKDIVISION_DIV1;
+    g_tim17_handle.Init.RepetitionCounter     = 0;
+    g_tim17_handle.Init.AutoReloadPreload     = TIM_AUTORELOAD_PRELOAD_ENABLE;
     if (HAL_TIM_Base_Init(&g_tim17_handle) != HAL_OK)
     {
         Error_Handler();

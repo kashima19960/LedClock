@@ -1,7 +1,9 @@
 #include "buzzer.h"
 #include <stdbool.h>
 /*
-电路设计采用的是PNP三极管，因此蜂鸣器写低电平响铃，高电平关闭
+蜂鸣器电路采用 PNP三极管
+1.低电平响铃
+2.高电平关闭
 */
 void buzzer_init(void)
 {

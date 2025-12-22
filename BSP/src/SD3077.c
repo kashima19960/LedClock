@@ -2,19 +2,22 @@
 #include "bsp_config.h"
 I2C_HandleTypeDef g_iic_handle;
 /*
-sd3077硬件上接了，PA9--I2C1_SCL,PA10--I2C1_SDA,PB1--SEC-INT
+硬件连接如下
+PA9--I2C1_SCL
+PA10--I2C1_SDA
+PB1--SEC-INT
 */
 void sd3077_iic_init(void)
 {
-    g_iic_handle.Instance = I2C1;
-    g_iic_handle.Init.Timing = 0x0000020B;
-    g_iic_handle.Init.OwnAddress1 = 0;
-    g_iic_handle.Init.AddressingMode = I2C_ADDRESSINGMODE_7BIT;
-    g_iic_handle.Init.DualAddressMode = I2C_DUALADDRESS_DISABLE;
-    g_iic_handle.Init.OwnAddress2 = 0;
+    g_iic_handle.Instance              = I2C1;
+    g_iic_handle.Init.Timing           = 0x0000020B;
+    g_iic_handle.Init.OwnAddress1      = 0;
+    g_iic_handle.Init.AddressingMode   = I2C_ADDRESSINGMODE_7BIT;
+    g_iic_handle.Init.DualAddressMode  = I2C_DUALADDRESS_DISABLE;
+    g_iic_handle.Init.OwnAddress2      = 0;
     g_iic_handle.Init.OwnAddress2Masks = I2C_OA2_NOMASK;
-    g_iic_handle.Init.GeneralCallMode = I2C_GENERALCALL_DISABLE;
-    g_iic_handle.Init.NoStretchMode = I2C_NOSTRETCH_DISABLE;
+    g_iic_handle.Init.GeneralCallMode  = I2C_GENERALCALL_DISABLE;
+    g_iic_handle.Init.NoStretchMode    = I2C_NOSTRETCH_DISABLE;
     if (HAL_I2C_Init(&g_iic_handle) != HAL_OK)
     {
         Error_Handler();
@@ -37,10 +40,10 @@ void HAL_I2C_MspInit(I2C_HandleTypeDef *i2cHandle)
     {
         SD3077_IIC_GPIO_CLK_ENABLE();
         SD3077_IIC_CLK_ENABLE();
-        gpio_init_struct.Pin = GPIO_PIN_9 | GPIO_PIN_10;
-        gpio_init_struct.Mode = GPIO_MODE_AF_OD;
-        gpio_init_struct.Pull = GPIO_PULLUP;
-        gpio_init_struct.Speed = GPIO_SPEED_FREQ_HIGH;
+        gpio_init_struct.Pin       = GPIO_PIN_9 | GPIO_PIN_10;
+        gpio_init_struct.Mode      = GPIO_MODE_AF_OD;
+        gpio_init_struct.Pull      = GPIO_PULLUP;
+        gpio_init_struct.Speed     = GPIO_SPEED_FREQ_HIGH;
         gpio_init_struct.Alternate = GPIO_AF4_I2C1;
         HAL_GPIO_Init(GPIOA, &gpio_init_struct);
     }
@@ -50,7 +53,7 @@ void sd3077_sec_int_gpio_init(void)
 {
     GPIO_InitTypeDef gpio_init_struct = {0};
     SD3077_SEC_INT_GPIO_CLK_ENABLE();
-    gpio_init_struct.Pin = SEC_INT_PIN;
+    gpio_init_struct.Pin  = SEC_INT_PIN;
     gpio_init_struct.Mode = GPIO_MODE_IT_FALLING;
     gpio_init_struct.Pull = GPIO_PULLUP;
     HAL_GPIO_Init(SEC_INT_GPIO_PORT, &gpio_init_struct);
@@ -67,27 +70,24 @@ static void unlock_write_protect(void)
     uint8_t ctr1_data;
     uint8_t ctr2_data;
 
-    /* 读取当前控制寄存器值 */
     HAL_I2C_Mem_Read(&SD3077_IIC_HANDLE, SD3077_IIC_ADDR_READ, SD3077_REG_CTR1, 1, &ctr1_data, 1, HAL_MAX_DELAY);
     HAL_I2C_Mem_Read(&SD3077_IIC_HANDLE, SD3077_IIC_ADDR_READ, SD3077_REG_CTR2, 1, &ctr2_data, 1, HAL_MAX_DELAY);
 
-    /* 步骤1: 先置WRTC1=1 (CTR2的bit7) */
+    /* 1: 先置WRTC1=1 (CTR2的bit7) */
     ctr2_data |= 0x80; /* 0x80 = 10000000 */
     HAL_I2C_Mem_Write(&SD3077_IIC_HANDLE, SD3077_IIC_ADDR_WRITE, SD3077_REG_CTR2, 1, &ctr2_data, 1, HAL_MAX_DELAY);
 
-    /* 步骤2: 后置WRTC2=1 (CTR1的bit2) */
+    /* 2: 后置WRTC2=1 (CTR1的bit2) */
     ctr1_data |= 0x04; /* 0x04 = 00000100 */
     HAL_I2C_Mem_Write(&SD3077_IIC_HANDLE, SD3077_IIC_ADDR_WRITE, SD3077_REG_CTR1, 1, &ctr1_data, 1, HAL_MAX_DELAY);
 
-    /* 步骤3: 最后置WRTC3=1 (CTR1的bit7) */
+    /* 3: 最后置WRTC3=1 (CTR1的bit7) */
     ctr1_data |= 0x80; /* 0x80 = 10000000 */
     HAL_I2C_Mem_Write(&SD3077_IIC_HANDLE, SD3077_IIC_ADDR_WRITE, SD3077_REG_CTR1, 1, &ctr1_data, 1, HAL_MAX_DELAY);
 }
 
 /**
  * @brief       启用SD3077写保护
- * @param       无
- * @retval      无
  * @note        必须按照顺序: WRTC2/WRTC3(CTR1) -> WRTC1(CTR2)
  */
 static void lock_write_protect(void)
@@ -193,7 +193,7 @@ void set_interrupt_output(SD3077IntFreq freq)
 INT脚输出频率中断由控制寄存器3 中的FS3、FS2、FS1、FS0位来选择确定,1111表示1秒中断
 */
 void enable_second_interrupt_output()
-{ // 解除写保护
+{ 
     unlock_write_protect();
 
     // 读出控制寄存器2和3
