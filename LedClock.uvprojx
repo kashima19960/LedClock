@@ -586,14 +586,14 @@
           <GroupName>TEST</GroupName>
           <Files>
             <File>
-              <FileName>factory_test.c</FileName>
+              <FileName>function_test.c</FileName>
               <FileType>1</FileType>
-              <FilePath>.\Test\factory_test.c</FilePath>
+              <FilePath>.\Test\function_test.c</FilePath>
             </File>
             <File>
-              <FileName>factory_test.h</FileName>
+              <FileName>function_test.h</FileName>
               <FileType>5</FileType>
-              <FilePath>.\Test\factory_test.h</FilePath>
+              <FilePath>.\Test\function_test.h</FilePath>
             </File>
           </Files>
         </Group>

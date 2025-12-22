@@ -5,23 +5,43 @@
 #include "app_interrupt_handler.h"
 #include "app_settings.h"
 #include "app_state.h"
-#include "dma.h"
+#include "delay.h"
 #include "exti.h"
+#include "function_test.h"
 #include "key.h"
 #include "sd3077.h"
 #include "stdbool.h"
 #include "tim.h"
 #include "tm1637.h"
+#include "buzzer.h"
 
+#define DEBUG 0
+#define ENABLE_FUNCTION_TEST 1
+#define FUNCTION_TEST_NO_INTERRUPTS 0
 void SystemClock_Config(void);
+
+static void function_key_gpio_init(void)
+{
+    __HAL_RCC_GPIOA_CLK_ENABLE();
+
+    GPIO_InitTypeDef GPIO_InitStruct = {0};
+    GPIO_InitStruct.Pin = MODE_KEY_PIN | SET_KEY_PIN;
+    GPIO_InitStruct.Mode = GPIO_MODE_INPUT;
+    GPIO_InitStruct.Pull = GPIO_PULLUP;
+    GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
+    HAL_GPIO_Init(GPIOA, &GPIO_InitStruct);
+}
 
 int main(void)
 {
     HAL_Init();
     SystemClock_Config();
+    delay_init(16);
+#if FUNCTION_TEST_NO_INTERRUPTS
     dma_init();
     sd3077_iic_init();
-    sec_int_gpio_init();
+    buzzer_init();
+    sd3077_sec_int_gpio_init();
     adc_init();
     tim17_init();
     tim3_init();
@@ -31,13 +51,22 @@ int main(void)
     register_timer_interrupt_callback(tim_interrupt_handler);
     uint8_t backup_data[BAK_DATA_SIZE];
     read_backup_data(BAK_POWER_DOWN_IND_INDEX, backup_data, BAK_DATA_SIZE);
+
+#endif
+
+#if ENABLE_FUNCTION_TEST
+    function_key_gpio_init();
+    test_run_entry();
+#endif
+
+#if DEBUG
     // 非正常关机，初始化时间为2020-01-01 00:00:00
     if (backup_data[0] != POWER_DOWN_IND_DATA && backup_data[1] != POWER_DOWN_IND_DATA)
     {
         time.year = YEAR_MIN_SET;
         time.month = 1;
-        time.dayOfMonth = 1;
-        time.dayOfWeek = 1;
+        time.day_of_month = 1;
+        time.day_of_week = 1;
         time.hours = 0;
         time.minutes = 0;
         time.ampm = HOUR24;
@@ -71,14 +100,16 @@ int main(void)
     }
 
     tm1637_init();
-    
+
     if (save_brightness != 0)
     {
-        tm1637_set_brightness(save_brightness);
+        // tm1637_set_brightness(save_brightness);
+        tm1637_set_brightness(4);
     }
     else
     {
-        tm1637_set_brightness(STRONG_BRIGHTNESS_VALUE);
+        // tm1637_set_brightness(STRONG_BRIGHTNESS_VALUE);
+        tm1637_set_brightness(4);
         is_weak_brightness = false;
     }
 
@@ -155,6 +186,7 @@ int main(void)
             }
         }
     }
+#endif
 }
 /**
  * @brief  系统时钟配置
