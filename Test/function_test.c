@@ -7,24 +7,9 @@
 #include "tm1637.h"
 #include "buzzer.h"
 #include "app_interrupt_handler.h"
-/*util start*/
+extern void register_timer_interrupt_callback(timer_interrupt_callback_t callback);
 
-/**
- * @startcode
- * static bool mode_key_pressed = false;
- * void main_loop(void)
- * {
- *     while (1)
- *     {
- *   
- *         if (key_press_detect(&mode_key_pressed, MODE_KEY_GPIO_PORT, MODE_KEY_PIN))
- *         {
- *          ..............
- *         }
- *     }
- * }
- * @endcode
- */
+/*util start*/
 bool key_press_detect(bool *key_pressed, GPIO_TypeDef *gpio_port, uint16_t gpio_pin)
 {
     GPIO_PinState key_state = HAL_GPIO_ReadPin(gpio_port, gpio_pin);
@@ -90,15 +75,12 @@ static void display_fail(void)
 }
 /*util end*/
 
-/*
- * 声明定时器回调注册函数（头文件未公开，测试内部使用）。
- */
-extern void register_timer_interrupt_callback(timer_interrupt_callback_t callback);
 
 /*tm1637 test start*/
 
 /*
 brief:测试是否能正确设置亮度
+phenomenon:每按下一次 SET 键，亮度加 1，数码管会显示当前亮度值（0-7）
 result:passed
 */
 void tm1637_test_setbrightness(void)
@@ -132,6 +114,7 @@ void tm1637_test_setbrightness(void)
 
 /*
 brief:测试是否能正确设置原始数据
+phenomenon:每按下一次 SET 键，数码管显示 A、B、C、D 字符，并点亮小数点
 result:passed
 */
 void tm1637_test_set_raw_data(void)
@@ -159,6 +142,7 @@ void tm1637_test_set_raw_data(void)
 
 /*
 brief:测试是否能正确设置字符显示
+phenomenon:数码管显示 A、B、C、D 字符，并点亮小数点
 result:passed
 */
 void tm1637_test_setchar(void)
@@ -178,6 +162,7 @@ void tm1637_test_setchar(void)
 
 /*
 brief:测试是否能正确显示数字
+phenomenon:数码管显示数字 9527
 result:passed
 */
 void tm1637_test_show_number_right()
@@ -325,10 +310,12 @@ void test_light_sensor_adc(void)
 /*light test end*/
 
 /*
- * 自动亮度阈值与滞回测试（方法B：注入极端值）
+brief:自动亮度阈值与滞回测试（方法B：注入极端值）
  * 要求：save_brightness = 0（自动模式），TIM16 中断有效。
  * 提示：建议将 FUNCTION_TEST_NO_INTERRUPTS 设为 1，以便 main 初始化
  * tim16 并注册回调；此函数内也调用 tim16_init 与回调注册以增强稳健性。
+ * phenomenon:数码管每2秒在高光（4095）和低光（0）之间切换，观察自动亮度切换情况
+result:
  */
 void test_auto_brightness_inject(void)
 {
