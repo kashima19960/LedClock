@@ -281,7 +281,7 @@ void sd3077_test_backup_ram(void)
 
 /*
 brief: 测试光敏电阻ADC采样值显示
-result: 在TM1637上实时显示光敏电阻的ADC值(0-4095)
+result: passed,在TM1637上实时显示光敏电阻的ADC值(0-4095)
 */
 void test_light_sensor_adc(void)
 {
@@ -310,12 +310,9 @@ void test_light_sensor_adc(void)
 /*light test end*/
 
 /*
-brief:自动亮度阈值与滞回测试（方法B：注入极端值）
- * 要求：save_brightness = 0（自动模式），TIM16 中断有效。
- * 提示：建议将 FUNCTION_TEST_NO_INTERRUPTS 设为 1，以便 main 初始化
- * tim16 并注册回调；此函数内也调用 tim16_init 与回调注册以增强稳健性。
- * phenomenon:数码管每2秒在高光（4095）和低光（0）之间切换，观察自动亮度切换情况
-result:
+brief:自动亮度阈值与滞回测试
+phenomenon:数码管每2秒在高光（4095）和低光（0）之间切换，观察自动亮度切换情况
+result:passed
  */
 void test_auto_brightness_inject(void)
 {
@@ -336,12 +333,10 @@ void test_auto_brightness_inject(void)
         weak_brightness   = WEAK_BRIGHTNESS_VALUE;
         is_weak_brightness = true;
 
-        /* 确保 TIM16 运行且回调已注册 */
         tim16_init();
         register_timer_interrupt_callback(tim_interrupt_handler);
         HAL_TIM_Base_Start_IT(&g_tim16_handle);
 
-        /* 初始注入为弱光（低端） */
         adc_value[0] = 0;
         tm1637_set_char(0, 'L', 0);
         tm1637_set_char(1, 'O', 0);
@@ -378,7 +373,6 @@ void test_auto_brightness_inject(void)
         }
     }
 
-    /* 观察自动亮度切换：is_weak_brightness 取值变化 */
     if (!seen_strong && !is_weak_brightness)
     {
         seen_strong = true;
@@ -404,52 +398,59 @@ void test_alarm_trigger_in_10s(void)
 {
     static bool initialized = false;
     static uint32_t start_ts = 0;
+    static bool mode_key_pressed = false;
+    static bool set_key_pressed = false;
 
     if (!initialized)
     {
         sd3077_iic_init();
         sd3077_sec_int_gpio_init();
         tm1637_init();
-
+        tim16_init();
+        tim3_init();
         tim17_init();
+        buzzer_init();
         register_timer_interrupt_callback(tim_interrupt_handler);
-        enable_second_interrupt_output();
-
-        /* 设定闹钟在下一分钟触发，当前时间设到 50 秒 */
         date_time dt;
         time_now(&dt);
-
-        uint8_t target_min  = (dt.minutes + 1) % 60;
+        /*
+        把目标时间设置为当前时间的下一个分钟整点，当前时间的秒数设为50秒，
+        这样就实现了距离目标时间10秒触发闹钟
+        例如：当前时间 12:34:45 -> 设置时间 12:34:50，闹钟时间 12:35:00
+        这样可以确保闹钟在10秒后触发
+        */
+        uint8_t target_min = (dt.minutes + 1) % 60;
         uint8_t target_hour = dt.hours;
         if (dt.minutes == 59)
         {
             target_hour = (dt.hours + 1) % 24;
         }
-
         is_alarm_enabled = true;
-        is_alarmed       = false;
-        alarm_hour       = target_hour;
-        alarm_min        = target_min;
-
+        is_alarmed = false;
+        alarm_hour = target_hour;
+        alarm_min = target_min;
         dt.seconds = 50;
         set_time(&dt);
-
-        start_ts   = HAL_GetTick();
+        start_ts = HAL_GetTick();
         initialized = true;
     }
+    uint32_t now = HAL_GetTick();
+    time_now(&time);
+    check_alarm();
 
-    /* 显示 10 秒倒计时 */
-    uint32_t now      = HAL_GetTick();
-    uint32_t elapsed  = now - start_ts;
-    uint8_t  remain_s = (elapsed >= 10000) ? 0 : (10 - (elapsed / 1000));
-    tm1637_show_number_right(3, remain_s, 0xFF, 1);
+    uint32_t elapsed = now - start_ts;
+    tm1637_show_number_right(3, (elapsed >= 10000) ? 0 : (10 - (elapsed / 1000)), 0xFF, 1);
     delay_ms(50);
 
     if (is_alarming)
     {
-        display_pass();
-        /* 演示通过后可选择停止响铃 */
-        alarm_stop();
+        /* 检测 MODE 键或 SET 键按下来停止闹钟 */
+        if (key_press_detect(&mode_key_pressed, MODE_KEY_GPIO_PORT, MODE_KEY_PIN) ||
+            key_press_detect(&set_key_pressed, SET_KEY_GPIO_PORT, SET_KEY_PIN))
+        {
+            display_pass();
+            alarm_stop();
+        }
     }
 }
 
@@ -461,19 +462,19 @@ void test_hourly_chime_in_10s(void)
 {
     static bool initialized = false;
     static uint32_t start_ts = 0;
-
+    static bool chime_triggered = false;
     if (!initialized)
     {
         sd3077_iic_init();
         sd3077_sec_int_gpio_init();
         tm1637_init();
-        enable_second_interrupt_output();
+        buzzer_init();
 
         /* 报时全天开启，避免闹钟互斥干扰 */
-        is_alarm_enabled        = false;
+        is_alarm_enabled = false;
         is_ring_on_time_enabled = true;
-        ring_on_time_start      = 0;
-        ring_on_time_stop       = 23;
+        ring_on_time_start = 0;
+        ring_on_time_stop = 23;
 
         date_time dt;
         time_now(&dt);
@@ -482,22 +483,21 @@ void test_hourly_chime_in_10s(void)
         dt.minutes = 59;
         dt.seconds = 50;
         set_time(&dt);
-
-        start_ts   = HAL_GetTick();
+        start_ts = HAL_GetTick();
         initialized = true;
     }
 
-    /* 显示 10 秒倒计时 */
-    uint32_t now      = HAL_GetTick();
-    uint32_t elapsed  = now - start_ts;
-    uint8_t  remain_s = (elapsed >= 10000) ? 0 : (10 - (elapsed / 1000));
-    tm1637_show_number_right(3, remain_s, 0xFF, 1);
-    delay_ms(50);
-
-    /* 检测蜂鸣器低电平（响铃） */
-    if (HAL_GPIO_ReadPin(BUZZER_GPIO_PORT, BUZZER_PIN) == GPIO_PIN_RESET)
+    uint32_t now = HAL_GetTick();
+    time_now(&time);
+    check_ring_on_time();
+    uint32_t elapsed = now - start_ts;
+    tm1637_show_number_right(3, (elapsed >= 10000) ? 0 : (10 - (elapsed / 1000)), 0xFF, 1);
+    if (!chime_triggered && HAL_GPIO_ReadPin(BUZZER_GPIO_PORT, BUZZER_PIN) == GPIO_PIN_RESET)
     {
+        delay_ms(2000);
+        chime_triggered = true;
         display_pass();
+        buzzer_off();
     }
 }
 
