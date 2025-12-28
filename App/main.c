@@ -4,6 +4,7 @@
 #include "app_display.h"
 #include "app_interrupt_handler.h"
 #include "app_settings.h"
+#include "app_setkey.h"
 #include "app_state.h"
 #include "delay.h"
 #include "exti.h"
@@ -14,10 +15,7 @@
 #include "tim.h"
 #include "tm1637.h"
 #include "buzzer.h"
-
-#define DEBUG 0
-#define ENABLE_FUNCTION_TEST 1
-#define FUNCTION_TEST_NO_INTERRUPTS 0
+#define ENABLE_FUNCTION_TEST 0
 void SystemClock_Config(void);
 
 static void function_key_gpio_init(void)
@@ -37,7 +35,7 @@ int main(void)
     HAL_Init();
     SystemClock_Config();
     delay_init(16);
-#if FUNCTION_TEST_NO_INTERRUPTS
+#if ENABLE_FUNCTION_TEST == 0
     dma_init();
     sd3077_iic_init();
     buzzer_init();
@@ -51,15 +49,11 @@ int main(void)
     register_timer_interrupt_callback(tim_interrupt_handler);
     uint8_t backup_data[BAK_DATA_SIZE];
     read_backup_data(BAK_POWER_DOWN_IND_INDEX, backup_data, BAK_DATA_SIZE);
-
-#endif
-
-#if ENABLE_FUNCTION_TEST
+#else
     function_key_gpio_init();
     test_run_entry();
 #endif
 
-#if DEBUG
     // 非正常关机，初始化时间为2020-01-01 00:00:00
     if (backup_data[0] != POWER_DOWN_IND_DATA && backup_data[1] != POWER_DOWN_IND_DATA)
     {
@@ -186,7 +180,6 @@ int main(void)
             }
         }
     }
-#endif
 }
 /**
  * @brief  系统时钟配置
