@@ -18,18 +18,6 @@
 #define ENABLE_FUNCTION_TEST 0
 void SystemClock_Config(void);
 
-static void function_key_gpio_init(void)
-{
-    __HAL_RCC_GPIOA_CLK_ENABLE();
-
-    GPIO_InitTypeDef GPIO_InitStruct = {0};
-    GPIO_InitStruct.Pin = MODE_KEY_PIN | SET_KEY_PIN;
-    GPIO_InitStruct.Mode = GPIO_MODE_INPUT;
-    GPIO_InitStruct.Pull = GPIO_PULLUP;
-    GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
-    HAL_GPIO_Init(GPIOA, &GPIO_InitStruct);
-}
-
 int main(void)
 {
     HAL_Init();
@@ -44,56 +32,59 @@ int main(void)
     tim17_init();
     tim3_init();
     tim16_init();
+    tm1637_init();
     key_init();
     register_exti_interrupt_callback(exti_interrupt_handler);
     register_timer_interrupt_callback(tim_interrupt_handler);
     uint8_t backup_data[BAK_DATA_SIZE];
     read_backup_data(BAK_POWER_DOWN_IND_INDEX, backup_data, BAK_DATA_SIZE);
 #else
-    function_key_gpio_init();
     test_run_entry();
 #endif
 
     // 非正常关机，初始化时间为2020-01-01 00:00:00
     if (backup_data[0] != POWER_DOWN_IND_DATA && backup_data[1] != POWER_DOWN_IND_DATA)
     {
-        time.year = YEAR_MIN_SET;
-        time.month = 1;
-        time.day_of_month = 1;
-        time.day_of_week = 1;
-        time.hours = 0;
-        time.minutes = 0;
-        time.ampm = HOUR24;
-        time.seconds = 0;
+        time.year          = YEAR_MIN_SET;
+        time.month         = 1;
+        time.day_of_month  = 1;
+        time.day_of_week   = 1;
+        time.hours         = 0;
+        time.minutes       = 0;
+        time.ampm          = HOUR24;
+        time.seconds       = 0;
         set_time(&time);
-
         reset_settings();
         save_settings();
     }
     else // 正常关机，读取设置
     {
-        is_alarm_enabled = backup_data[BAK_ALARM_ENABLED_INDEX];
-        alarm_hour = backup_data[BAK_ALARM_HOUR_INDEX];
-        alarm_min = backup_data[BAK_ALARM_MINUTE_INDEX];
-        temperature_show_time = backup_data[BAK_TEMP_SHOW_TIME_INDEX];
-        temperature_hide_time = backup_data[BAK_TEMP_HIDE_TIME_INDEX];
+        is_alarm_enabled        = backup_data[BAK_ALARM_ENABLED_INDEX];
+        alarm_hour              = backup_data[BAK_ALARM_HOUR_INDEX];
+        alarm_min               = backup_data[BAK_ALARM_MINUTE_INDEX];
+        temperature_show_time   = backup_data[BAK_TEMP_SHOW_TIME_INDEX];
+        temperature_hide_time   = backup_data[BAK_TEMP_HIDE_TIME_INDEX];
         is_ring_on_time_enabled = backup_data[BAK_ROT_ENABLED_INDEX];
-        ring_on_time_start = backup_data[BAK_ROT_START_INDEX];
-        ring_on_time_stop = backup_data[BAK_ROT_STOP_INDEX];
-        save_brightness = backup_data[BAK_BRIGHTNESS_INDEX];
-        strong_brightness = backup_data[BAK_BRIGHTNESS_STRONG_INDEX];
-        weak_brightness = backup_data[BAK_BRIGHTNESS_WEAK_INDEX];
+        ring_on_time_start      = backup_data[BAK_ROT_START_INDEX];
+        ring_on_time_stop       = backup_data[BAK_ROT_STOP_INDEX];
+        save_brightness         = backup_data[BAK_BRIGHTNESS_INDEX];
+        strong_brightness       = backup_data[BAK_BRIGHTNESS_STRONG_INDEX];
+        weak_brightness         = backup_data[BAK_BRIGHTNESS_WEAK_INDEX];
     }
 
-    if (alarm_hour > (uint8_t)23 || alarm_min > (uint8_t)59 || ring_on_time_start > 23 || ring_on_time_stop > 23 ||
-        save_brightness > 8 || strong_brightness > 8 || strong_brightness == 0 || weak_brightness > 8 ||
-        weak_brightness == 0)
+    if ((alarm_hour > (uint8_t)23)
+        || (alarm_min > (uint8_t)59)
+        || (ring_on_time_start > 23)
+        || (ring_on_time_stop > 23)
+        || (save_brightness > 8)
+        || (strong_brightness > 8)
+        || (strong_brightness == 0)
+        || (weak_brightness > 8)
+        || (weak_brightness == 0))
     {
         reset_settings();
         save_settings();
     }
-
-    tm1637_init();
 
     if (save_brightness != 0)
     {
@@ -119,11 +110,8 @@ int main(void)
     enable_second_interrupt_output();
 
     last_display_change_time = HAL_GetTick();
-
     is_init_completed = true;
-
     uint32_t now = 0, passed_time;
-    // 蜂鸣器高电平关闭，低电平响铃
     while (1)
     {
         if (HAL_GPIO_ReadPin(BUZZER_GPIO_PORT, BUZZER_PIN) == GPIO_PIN_RESET && !is_alarming)

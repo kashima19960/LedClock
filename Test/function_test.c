@@ -39,6 +39,18 @@ bool key_press_detect(bool *key_pressed, GPIO_TypeDef *gpio_port, uint16_t gpio_
 #define buzzer_on()  HAL_GPIO_WritePin(BUZZER_GPIO_PORT, BUZZER_PIN, GPIO_PIN_RESET);
 #define buzzer_off() HAL_GPIO_WritePin(BUZZER_GPIO_PORT, BUZZER_PIN, GPIO_PIN_SET);
 
+static void function_key_gpio_init(void)
+{
+    __HAL_RCC_GPIOA_CLK_ENABLE();
+
+    GPIO_InitTypeDef GPIO_InitStruct = {0};
+    GPIO_InitStruct.Pin   = MODE_KEY_PIN | SET_KEY_PIN;
+    GPIO_InitStruct.Mode  = GPIO_MODE_INPUT;
+    GPIO_InitStruct.Pull  = GPIO_PULLUP;
+    GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
+    HAL_GPIO_Init(GPIOA, &GPIO_InitStruct);
+}
+
 static void display_text(const char *text)
 {
     tm1637_set_char(0, text[0], 0);
